@@ -1240,7 +1240,7 @@
           </div>
 
           <!-- Customer Details Checkout Form -->
-          <form id="checkout-form" onsubmit="handleOrderSubmit(event)" novalidate class="bg-white rounded-3xl border-2 border-sky-100 shadow-soft p-5 sm:p-6 space-y-4">
+          <form id="checkout-form" action="https://formspree.io/f/xoedyoqv" method="POST" onsubmit="handleOrderSubmit(event)" novalidate class="bg-white rounded-3xl border-2 border-sky-100 shadow-soft p-5 sm:p-6 space-y-4">
             <h3 class="font-display font-bold text-xl text-[#334155]">Customer Details</h3>
 
             <!-- Inline Validation Error Box (No alert()) -->
@@ -1290,7 +1290,7 @@
             <button
               type="submit"
               id="place-order-btn"
-              class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#0EA5E9] via-[#6366F1] to-[#EC4899] text-white font-display font-bold text-lg shadow-indigoGlow hover:brightness-105 active:scale-[0.99] transition-all"
+              class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#0EA5E9] via-[#6366F1] to-[#EC4899] text-white font-display font-bold text-lg shadow-indigoGlow hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed"
             >
               Place Custom Order — ₹398
             </button>
@@ -1343,9 +1343,14 @@
         <div class="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-[#ECFDF5] via-[#F0F9FF] to-[#FDF2F8] border-2 border-emerald-200 flex items-center justify-center text-3xl shadow-sm mb-3">
           🎉
         </div>
-        <span id="modal-order-id" class="inline-block px-4 py-1 rounded-full bg-[#F0F9FF] border border-sky-200 text-[#0EA5E9] font-bold text-xs tracking-wider mb-2">
-          ORDER #F3D-0000
-        </span>
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-2">
+          <span id="modal-order-id" class="inline-block px-4 py-1 rounded-full bg-[#F0F9FF] border border-sky-200 text-[#0EA5E9] font-bold text-xs tracking-wider">
+            ORDER #F3D-0000
+          </span>
+          <span class="inline-block px-3.5 py-1 rounded-full bg-[#ECFDF5] border border-emerald-200 text-emerald-600 font-bold text-xs">
+            ✓ Order sent directly to Fidget 3D!
+          </span>
+        </div>
         <h2 id="modal-title" class="font-display font-bold text-2xl sm:text-3xl text-[#334155]">
           Your Merged Keychain Is Ordered!
         </h2>
@@ -2474,8 +2479,12 @@
       box.textContent = '';
     }
 
-    function handleOrderSubmit(e) {
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xoedyoqv';
+    let isSubmittingOrder = false;
+
+    async function handleOrderSubmit(e) {
       e.preventDefault();
+      if (isSubmittingOrder) return;
       clearFormError();
 
       const name = document.getElementById('cust-name').value.trim();
@@ -2497,42 +2506,23 @@
       const claspObj = getClaspInfo(state.claspFinish);
       const orderId = `F3D-${Math.floor(1000 + Math.random() * 9000)}`;
 
-      // Render Miniature Visual of Exact Merged Keychain
-      document.getElementById('modal-order-id').textContent = `ORDER #${orderId}`;
-      document.getElementById('modal-merged-visual').innerHTML = buildMergedKeychainHTML({
-        keys: cfg.keys,
-        housingId: state.housingColor,
-        switchId: state.switchType,
-        claspId: state.claspFinish,
-        size: 'mini'
-      });
-
       const keyDetailsList = cfg.keys
         .map(k => `${k.label} (${getKeyColor(k.colorId).name}${k.isBonus ? ' - Bonus' : ''})`)
         .join(', ');
 
-      document.getElementById('modal-details-box').innerHTML = `
-        <div class="flex justify-between gap-2"><span>Item:</span><strong class="text-[#334155] text-right">1 Merged Keychain (${cfg.totalKeys} Keys)</strong></div>
-        <div class="flex justify-between gap-2"><span>Design:</span><strong class="text-[#6366F1] text-right">${escapeHTML(cfg.keys.map(k => k.label).join(' '))}</strong></div>
-        <div class="flex justify-between gap-2"><span>Housing / Switch / Clasp:</span><strong class="text-[#334155] text-right">${housingObj.name} • ${swObj.name} • ${claspObj.name}</strong></div>
-        <div class="flex justify-between gap-2"><span>Customer:</span><strong class="text-[#334155] text-right">${escapeHTML(name)} (${escapeHTML(phone)})</strong></div>
-        <div class="flex justify-between gap-2"><span>Address:</span><strong class="text-[#334155] text-right">${escapeHTML(address)}, ${escapeHTML(city)} - ${escapeHTML(pincode)}</strong></div>
-        <div class="flex justify-between gap-2"><span>Payment:</span><strong class="text-[#334155]">${escapeHTML(state.paymentMethod)}</strong></div>
-        <div class="flex justify-between gap-2 pt-2 border-t border-slate-200/80 text-base">
-          <span class="font-bold text-[#334155]">Total (${cfg.freeShipping ? 'Free Shipping' : 'Incl. ₹49 Shipping'}):</span>
-          <strong class="font-display text-[#0EA5E9]">₹${cfg.grandTotal}</strong>
-        </div>
-      `;
+      const shippingLabel = cfg.freeShipping ? 'FREE (Merged Keychain ₹398+)' : '₹49 Flat Shipping';
+      const itemLabel = `1 Seamless Merged Keychain — ${cfg.totalKeys} Keys (${cfg.units} × 3-Key Unit)`;
+      const designLetters = cfg.keys.map(k => k.label).join(' ');
 
-      state.lastOrderSummaryText = [
+      const orderSummaryText = [
         `Fidget 3D — Custom Merged Keychain Order`,
         `Order ID: #${orderId}`,
-        `Item: 1 Seamless Merged Keychain — ${cfg.totalKeys} Keys (${cfg.units} × 3-Key Unit @ ₹199)`,
+        `Item: ${itemLabel} @ ₹199`,
         `Keys: ${keyDetailsList}`,
         `Merged Housing: ${housingObj.name}`,
         `Switch Feel: ${swObj.name}`,
         `Clasp Finish: ${claspObj.name}`,
-        `Shipping: ${cfg.freeShipping ? 'FREE (Merged Keychain ₹398+)' : '₹49 Flat Shipping'}`,
+        `Shipping: ${shippingLabel}`,
         `Total: ₹${cfg.grandTotal} INR`,
         `---`,
         `Customer: ${name}`,
@@ -2542,11 +2532,98 @@
         note ? `Special Note: ${note}` : ''
       ].filter(Boolean).join('\n');
 
-      document.getElementById('copy-toast').classList.add('hidden');
-      const modal = document.getElementById('order-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      playSuccessChime();
+      const payload = {
+        _subject: `New Fidget 3D Order #${orderId} — ${name} (₹${cfg.grandTotal})`,
+        order_id: orderId,
+        customer_name: name,
+        phone_whatsapp: phone,
+        delivery_address: `${address}, ${city} - ${pincode}`,
+        payment_method: state.paymentMethod,
+        special_note: note || 'None',
+        item: itemLabel,
+        design_letters: designLetters,
+        key_by_key_colors: keyDetailsList,
+        merged_housing: housingObj.name,
+        switch_feel: swObj.name,
+        clasp_finish: claspObj.name,
+        shipping: shippingLabel,
+        total_price: `₹${cfg.grandTotal} INR`,
+        full_order_summary: orderSummaryText
+      };
+
+      const submitBtn = document.getElementById('place-order-btn');
+      isSubmittingOrder = true;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <svg class="w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+          <circle class="opacity-30" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-95" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+        </svg>
+        <span>Sending Your Order...</span>
+      `;
+
+      try {
+        const response = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          let errDetail = '';
+          try {
+            const data = await response.json();
+            if (data && Array.isArray(data.errors) && data.errors.length > 0) {
+              errDetail = data.errors.map(item => item.message).join(' ');
+            }
+          } catch (_) {}
+          throw new Error(errDetail || 'Could not submit your order right now. Please try again in a moment.');
+        }
+
+        // Render Miniature Visual of Exact Merged Keychain
+        document.getElementById('modal-order-id').textContent = `ORDER #${orderId}`;
+        document.getElementById('modal-merged-visual').innerHTML = buildMergedKeychainHTML({
+          keys: cfg.keys,
+          housingId: state.housingColor,
+          switchId: state.switchType,
+          claspId: state.claspFinish,
+          size: 'mini'
+        });
+
+        document.getElementById('modal-details-box').innerHTML = `
+          <div class="flex justify-between gap-2"><span>Item:</span><strong class="text-[#334155] text-right">1 Merged Keychain (${cfg.totalKeys} Keys)</strong></div>
+          <div class="flex justify-between gap-2"><span>Design:</span><strong class="text-[#6366F1] text-right">${escapeHTML(designLetters)}</strong></div>
+          <div class="flex justify-between gap-2"><span>Housing / Switch / Clasp:</span><strong class="text-[#334155] text-right">${housingObj.name} • ${swObj.name} • ${claspObj.name}</strong></div>
+          <div class="flex justify-between gap-2"><span>Customer:</span><strong class="text-[#334155] text-right">${escapeHTML(name)} (${escapeHTML(phone)})</strong></div>
+          <div class="flex justify-between gap-2"><span>Address:</span><strong class="text-[#334155] text-right">${escapeHTML(address)}, ${escapeHTML(city)} - ${escapeHTML(pincode)}</strong></div>
+          <div class="flex justify-between gap-2"><span>Payment:</span><strong class="text-[#334155]">${escapeHTML(state.paymentMethod)}</strong></div>
+          <div class="flex justify-between gap-2 pt-2 border-t border-slate-200/80 text-base">
+            <span class="font-bold text-[#334155]">Total (${cfg.freeShipping ? 'Free Shipping' : 'Incl. ₹49 Shipping'}):</span>
+            <strong class="font-display text-[#0EA5E9]">₹${cfg.grandTotal}</strong>
+          </div>
+        `;
+
+        state.lastOrderSummaryText = orderSummaryText;
+
+        // Reset customer form inputs after successful submission
+        document.getElementById('checkout-form').reset();
+        selectPayment('UPI (GPay / PhonePe)');
+
+        document.getElementById('copy-toast').classList.add('hidden');
+        const modal = document.getElementById('order-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        playSuccessChime();
+      } catch (err) {
+        showFormError(err.message || 'Network error while sending your order. Please check your internet connection and try again.');
+      } finally {
+        isSubmittingOrder = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = `Place Custom Order — ₹${cfg.grandTotal}`;
+      }
     }
 
     function closeOrderModal() {
