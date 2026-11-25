@@ -1,0 +1,2589 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fidget 3D — Customizable Merged 3D-Printed Mechanical Fidget Keychains</title>
+
+  <!-- Google Fonts: Fredoka (playful tactile rounded display) & Plus Jakarta Sans (clean legible UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            ink: '#334155',
+            subink: '#475569',
+            body: '#64748B',
+            muted: '#94A3B8',
+            cloud: '#F8FAFC',
+            cream: '#FFFDF9',
+            mint: '#A7F3D0',
+            skyPastel: '#BAE6FD',
+            blush: '#FBCFE8',
+            lavender: '#DDD6FE',
+            peach: '#FED7AA',
+            butter: '#FEF08A',
+            brandIndigo: '#6366F1',
+            brandPink: '#EC4899',
+            brandSky: '#0EA5E9',
+          },
+          boxShadow: {
+            soft: '0 10px 30px -8px rgba(100, 116, 139, 0.12), 0 4px 12px -4px rgba(148, 163, 184, 0.08)',
+            card: '0 16px 38px -10px rgba(100, 116, 139, 0.14), 0 2px 8px -2px rgba(148, 163, 184, 0.08)',
+            skyGlow: '0 12px 28px -6px rgba(14, 165, 233, 0.30)',
+            indigoGlow: '0 12px 28px -6px rgba(99, 102, 241, 0.28)',
+            pinkGlow: '0 12px 28px -6px rgba(236, 72, 153, 0.26)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* =========================================================================
+       STRICT LIGHT COLOR PALETTE FOUNDATION (ZERO BLACK ANYWHERE)
+       ========================================================================= */
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: rgba(14, 165, 233, 0.16);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #FFFFFF;
+      color: #334155;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .font-display {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Soft pastel scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F8FAFC;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+
+    /* =========================================================================
+       SEAMLESS SINGLE-BAR 3D MECHANICAL KEYCHAIN & TACTILE KEYCAPS
+       ========================================================================= */
+    .keychain-stage {
+      perspective: 1000px;
+    }
+
+    /* Unified 3D-printed PLA+ merged housing bar */
+    .merged-housing {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 14px 16px 14px;
+      border-radius: 22px;
+      border: 2px solid rgba(255, 255, 255, 0.92);
+      transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+      box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.95),
+        inset 0 -4px 8px rgba(148, 163, 184, 0.20),
+        0 8px 0 var(--housing-depth, #CBD5E1),
+        0 18px 28px -6px rgba(100, 116, 139, 0.18);
+    }
+
+    .merged-housing-compact {
+      padding: 10px 11px 13px 11px;
+      border-radius: 18px;
+      box-shadow:
+        inset 0 2px 3px rgba(255, 255, 255, 0.92),
+        inset 0 -3px 6px rgba(148, 163, 184, 0.18),
+        0 6px 0 var(--housing-depth, #CBD5E1),
+        0 14px 22px -6px rgba(100, 116, 139, 0.17);
+    }
+
+    .merged-housing-mini {
+      padding: 7px 8px 10px 8px;
+      border-radius: 15px;
+      box-shadow:
+        inset 0 1.5px 3px rgba(255, 255, 255, 0.9),
+        inset 0 -2px 5px rgba(148, 163, 184, 0.16),
+        0 4px 0 var(--housing-depth, #CBD5E1),
+        0 9px 16px -4px rgba(100, 116, 139, 0.16);
+    }
+
+    /* Subtle engraved join accent on housing underside for 3D-printed charm */
+    .merged-housing::after {
+      content: '';
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 4px;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      pointer-events: none;
+    }
+
+    /* Recessed switch well inside unified bar */
+    .switch-well {
+      position: relative;
+      padding: 4px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(148, 163, 184, 0.20) 0%, rgba(255, 255, 255, 0.65) 100%);
+      box-shadow: inset 0 2px 4px rgba(100, 116, 139, 0.15);
+    }
+
+    .switch-well-compact {
+      padding: 3px;
+      border-radius: 12px;
+    }
+
+    .switch-well-mini {
+      padding: 2.5px;
+      border-radius: 9px;
+    }
+
+    /* Colored mechanical switch stem collar peeking beneath sculpted keycap */
+    .switch-collar {
+      position: absolute;
+      inset: 3px;
+      border-radius: 11px;
+      border: 2px solid var(--switch-tint, #38BDF8);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(248, 250, 252, 0.55));
+      pointer-events: none;
+    }
+
+    /* Tactile 3D Mechanical Keycap Button */
+    .keycap-btn {
+      position: relative;
+      width: 66px;
+      height: 66px;
+      border-radius: 13px;
+      cursor: pointer;
+      user-select: none;
+      outline: none;
+      border: none;
+      padding: 5.5px;
+      background: linear-gradient(155deg, var(--key-light, #E0F2FE) 0%, var(--key-main, #7DD3FC) 100%);
+      box-shadow:
+        0 8px 0 var(--key-depth, #38BDF8),
+        0 12px 16px -4px rgba(100, 116, 139, 0.22),
+        inset 0 2px 2px rgba(255, 255, 255, 0.82);
+      transform: translateY(-4px);
+      transition: transform 0.065s cubic-bezier(0.3, 0.9, 0.4, 1.3), box-shadow 0.065s cubic-bezier(0.3, 0.9, 0.4, 1.3), filter 0.15s ease;
+    }
+
+    .keycap-btn:hover {
+      filter: brightness(1.03);
+    }
+
+    .keycap-btn:active,
+    .keycap-btn.is-pressed {
+      transform: translateY(3.5px) !important;
+      box-shadow:
+        0 1.5px 0 var(--key-depth, #38BDF8),
+        0 3px 6px -2px rgba(100, 116, 139, 0.18),
+        inset 0 2px 3px rgba(255, 255, 255, 0.65) !important;
+    }
+
+    /* Compact keycap for 9-key or 12-key merged bars */
+    .keycap-compact {
+      width: 54px;
+      height: 54px;
+      border-radius: 11px;
+      padding: 4.5px;
+      box-shadow:
+        0 6.5px 0 var(--key-depth, #38BDF8),
+        0 10px 13px -4px rgba(100, 116, 139, 0.20),
+        inset 0 2px 2px rgba(255, 255, 255, 0.8);
+      transform: translateY(-3px);
+    }
+
+    .keycap-compact:active,
+    .keycap-compact.is-pressed {
+      transform: translateY(3px) !important;
+      box-shadow:
+        0 1px 0 var(--key-depth, #38BDF8),
+        0 2px 5px rgba(100, 116, 139, 0.16) !important;
+    }
+
+    /* Hero 6-key showcase keycap */
+    .keycap-hero {
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      padding: 5.5px;
+      box-shadow:
+        0 9px 0 var(--key-depth, #38BDF8),
+        0 14px 18px -4px rgba(100, 116, 139, 0.22),
+        inset 0 2px 2px rgba(255, 255, 255, 0.86);
+    }
+
+    /* Mini keycap for gallery cards & modal */
+    .keycap-mini {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      padding: 3px;
+      box-shadow:
+        0 4.5px 0 var(--key-depth, #38BDF8),
+        0 7px 10px -3px rgba(100, 116, 139, 0.20),
+        inset 0 1.5px 2px rgba(255, 255, 255, 0.8);
+      transform: translateY(-2px);
+    }
+
+    .keycap-mini:active,
+    .keycap-mini.is-pressed {
+      transform: translateY(2px) !important;
+      box-shadow:
+        0 1px 0 var(--key-depth, #38BDF8),
+        0 2px 4px rgba(100, 116, 139, 0.15) !important;
+    }
+
+    /* Sculpted concave top dish of keycap */
+    .keycap-top {
+      width: 100%;
+      height: 100%;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, var(--key-dish-top, #F0F9FF) 0%, var(--key-main, #7DD3FC) 100%);
+      box-shadow:
+        inset 0 3px 5px rgba(255, 255, 255, 0.74),
+        inset 0 -3px 5px rgba(100, 116, 139, 0.12);
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      color: var(--key-text, #334155);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.68);
+      position: relative;
+      overflow: hidden;
+      line-height: 1;
+    }
+
+    .keycap-mini .keycap-top {
+      border-radius: 6px;
+    }
+
+    /* Subtle matte 3D-printed PLA highlight sheen */
+    .keycap-top::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 16%;
+      right: 16%;
+      height: 2.5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.58);
+      pointer-events: none;
+    }
+
+    /* Selected key indicator ring inside Customizer */
+    .keycap-selected-ring {
+      position: relative;
+    }
+    .keycap-selected-ring::before {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 17px;
+      border: 2.5px dashed #0EA5E9;
+      animation: gentlePulse 1.7s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    /* Soft pastel click ripple */
+    @keyframes rippleOut {
+      0% { transform: scale(0.65); opacity: 0.8; }
+      100% { transform: scale(1.85); opacity: 0; }
+    }
+
+    .click-ripple {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      border: 3px solid var(--key-depth, #38BDF8);
+      pointer-events: none;
+      animation: rippleOut 0.45s ease-out forwards;
+    }
+
+    /* Floating pastel sparkle/confetti particle on click */
+    @keyframes sparkleFly {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.7) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx, 0px), var(--ty, -42px)) scale(1.15) rotate(var(--rot, 35deg));
+      }
+    }
+
+    .sparkle-particle {
+      position: absolute;
+      left: 50%;
+      top: 30%;
+      pointer-events: none;
+      z-index: 35;
+      font-size: 13px;
+      font-weight: 700;
+      animation: sparkleFly 0.65s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+    }
+
+    @keyframes floatPop {
+      0% { opacity: 0; transform: translate(-50%, 4px) scale(0.85); }
+      28% { opacity: 1; transform: translate(-50%, -14px) scale(1.04); }
+      100% { opacity: 0; transform: translate(-50%, -36px) scale(0.95); }
+    }
+
+    .float-feedback {
+      position: absolute;
+      left: 50%;
+      top: -10px;
+      white-space: nowrap;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: #334155;
+      background: #FFFFFF;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1.5px solid #BAE6FD;
+      box-shadow: 0 6px 14px rgba(14, 165, 233, 0.20);
+      pointer-events: none;
+      z-index: 40;
+      animation: floatPop 0.72s ease-out forwards;
+    }
+
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .animate-gentle-float {
+      animation: gentleFloat 4.6s ease-in-out infinite;
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(1.02); }
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-enter {
+      animation: fadeSlideIn 0.3s ease-out forwards;
+    }
+
+    /* Soft frosted light modal backdrop (NO BLACK!) */
+    .light-modal-backdrop {
+      background: rgba(240, 249, 255, 0.80);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* Mobile responsive refinements for 6-key hero & customizer bars */
+    @media (max-width: 520px) {
+      .keycap-hero {
+        width: 48px;
+        height: 48px;
+        border-radius: 11px;
+        padding: 4px;
+      }
+      .keycap-btn {
+        width: 54px;
+        height: 54px;
+        border-radius: 11px;
+        padding: 4.5px;
+      }
+      .keycap-compact {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        padding: 3.5px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-white text-[#334155] antialiased selection:bg-sky-100 selection:text-[#334155]">
+
+  <!-- =========================================================================
+       STICKY LIGHT HEADER & NAVIGATION
+       ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/92 backdrop-blur-md border-b border-sky-100/90 shadow-[0_4px_20px_-6px_rgba(148,163,184,0.12)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20 gap-3">
+
+        <!-- Playful 3D Keycap Logo -->
+        <button onclick="navigateTo('home')" class="flex items-center gap-2.5 group focus:outline-none text-left" aria-label="Fidget 3D Home">
+          <div class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-sky-200 via-indigo-200 to-pink-200 p-1 shadow-[0_4px_0_#BAE6FD,0_8px_14px_rgba(14,165,233,0.22)] group-hover:-translate-y-0.5 group-active:translate-y-0.5 transition-all">
+            <div class="w-full h-full rounded-xl bg-gradient-to-br from-white via-[#F0F9FF] to-[#F5F3FF] flex items-center justify-center shadow-inner">
+              <span class="font-display font-bold text-sm sm:text-base text-[#334155] tracking-tight">F3D</span>
+            </div>
+          </div>
+          <div>
+            <div class="font-display font-bold text-xl sm:text-2xl tracking-tight text-[#334155] leading-none flex items-center gap-1">
+              Fidget <span class="text-[#0EA5E9]">3D</span>
+            </div>
+            <p class="text-[11px] font-medium text-[#64748B] hidden sm:block mt-0.5">Seamless Merged 3D Keychains</p>
+          </div>
+        </button>
+
+        <!-- Center Desktop Page Tabs -->
+        <nav class="hidden md:flex items-center bg-[#F8FAFC] p-1.5 rounded-full border border-sky-100" aria-label="Main Navigation">
+          <button
+            id="nav-tab-home"
+            onclick="navigateTo('home')"
+            class="px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-white text-[#334155] shadow-sm"
+          >
+            Home
+          </button>
+          <button
+            id="nav-tab-order"
+            onclick="navigateTo('order')"
+            class="px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 text-[#64748B] hover:text-[#334155] flex items-center gap-1.5"
+          >
+            <span>Order Custom Keychain</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-[#EC4899]">From ₹199</span>
+          </button>
+        </nav>
+
+        <!-- Right Actions: Sound Toggle + Primary CTA -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button
+            id="sound-toggle-btn"
+            onclick="toggleSound()"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#F0F9FF] hover:bg-sky-100/80 border border-sky-200/80 text-[#334155] text-xs sm:text-sm font-semibold transition-all active:scale-95"
+            title="Toggle mechanical switch click sounds"
+            aria-pressed="true"
+          >
+            <span id="sound-icon-on" class="flex items-center text-[#0EA5E9]">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H3v6h3l5 4V5z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" />
+              </svg>
+            </span>
+            <span id="sound-icon-off" class="hidden items-center text-[#94A3B8]">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H3v6h3l5 4V5z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M22 9l-6 6M16 9l6 6" />
+              </svg>
+            </span>
+            <span id="sound-label" class="hidden sm:inline">Sound On</span>
+          </button>
+
+          <button
+            onclick="navigateTo('order')"
+            class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-full bg-gradient-to-r from-[#0EA5E9] via-[#6366F1] to-[#EC4899] text-white font-bold text-xs sm:text-sm shadow-indigoGlow hover:brightness-105 active:scale-95 transition-all"
+          >
+            <span>Design Yours</span>
+            <span class="hidden sm:inline">— ₹199</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Page Switcher Bar -->
+      <div class="flex md:hidden pb-3 pt-0.5 gap-2">
+        <button
+          id="mobile-tab-home"
+          onclick="navigateTo('home')"
+          class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-sky-50 text-[#334155] border border-sky-200"
+        >
+          1. Home &amp; Science
+        </button>
+        <button
+          id="mobile-tab-order"
+          onclick="navigateTo('order')"
+          class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-[#F8FAFC] text-[#64748B] border border-slate-200/80"
+        >
+          2. Order Merged Keychain
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       PAGE 1: HOME PAGE
+       ========================================================================= -->
+  <main id="page-home" class="page-enter">
+
+    <!-- 1. HERO SECTION -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-[#F0F9FF] via-[#FFFDF9] to-[#FDF2F8] pt-10 pb-16 sm:pt-14 sm:pb-24 border-b border-sky-100/80">
+      <!-- Soft Decorative Pastel Orbs -->
+      <div class="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-sky-100/75 blur-3xl pointer-events-none"></div>
+      <div class="absolute top-16 -right-24 w-80 h-80 rounded-full bg-pink-100/70 blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 left-1/3 w-80 h-80 rounded-full bg-violet-100/60 blur-3xl pointer-events-none"></div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-10 items-center">
+
+          <!-- Hero Left Copy -->
+          <div class="lg:col-span-5 text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-sky-200/80 shadow-sm mb-5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-xs sm:text-sm font-bold text-[#475569]">Your Entire Name Merged Into ONE Keychain</span>
+            </div>
+
+            <h1 class="font-display font-bold text-4xl sm:text-5xl lg:text-[3.2rem] leading-[1.09] text-[#334155] tracking-tight">
+              Your Name. Full Color.
+              <span class="bg-gradient-to-r from-[#0EA5E9] via-[#6366F1] to-[#EC4899] bg-clip-text text-transparent">
+                One Seamless Click.
+              </span>
+            </h1>
+
+            <p class="mt-5 text-base sm:text-lg text-[#64748B] leading-relaxed max-w-xl mx-auto lg:mx-0">
+              Meet <strong class="text-[#334155] font-semibold">Fidget 3D</strong> — colorful, 3D-printed mechanical keyboard switch keychains that merge your entire name into <strong class="text-[#334155] font-semibold">one unified pastel bar</strong>. Zero separate pieces, endless stress relief.
+            </p>
+
+            <!-- Hero CTAs -->
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
+              <button
+                onclick="navigateTo('order')"
+                class="w-full sm:w-auto px-7 py-4 rounded-2xl bg-gradient-to-r from-[#0EA5E9] via-[#6366F1] to-[#EC4899] text-white font-bold text-base shadow-indigoGlow hover:brightness-105 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
+              >
+                <span>Design Your Merged Keychain — From ₹199</span>
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="mt-4 flex justify-center lg:justify-start">
+              <a
+                href="#why-fidget-3d"
+                class="inline-flex items-center gap-1.5 text-sm font-bold text-[#6366F1] hover:text-[#0EA5E9] transition"
+              >
+                <span>Explore why Fidget 3D &amp; stress-relief science work</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </a>
+            </div>
+
+            <!-- Trust Micro-Badges -->
+            <div class="mt-7 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs sm:text-sm font-semibold text-[#64748B]">
+              <div class="flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">✓</span>
+                <span>1 Seamless Merged Bar</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-sky-100 text-[#0EA5E9] flex items-center justify-center text-xs">✓</span>
+                <span>₹199 per 3-Key Unit</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-pink-100 text-[#EC4899] flex items-center justify-center text-xs">✓</span>
+                <span>Eco Matte PLA+</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Right: Interactive 6-Key Merged Tactile Demo -->
+          <div class="lg:col-span-7">
+            <div class="relative bg-white/95 rounded-[2rem] border-2 border-sky-100 shadow-card p-5 sm:p-7 text-center">
+              <!-- Top Demo Status Row -->
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F0F9FF] border border-sky-100 text-xs font-bold text-[#0EA5E9]">
+                  <span class="w-2 h-2 rounded-full bg-[#0EA5E9]"></span>
+                  <span>Live 6-Key Merged Demo — Tap Any Key!</span>
+                </div>
+
+                <!-- Live Clicks to Calm Counter -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ECFDF5] border border-emerald-200/80 text-xs font-bold text-emerald-600">
+                  <span>Clicks to Calm:</span>
+                  <span id="hero-click-counter" class="px-2.5 py-0.5 rounded-full bg-white text-[#334155] font-display text-sm shadow-sm">0</span>
+                </div>
+              </div>
+
+              <!-- Interactive Single Merged 6-Key 3D Mechanical Keychain Stage -->
+              <div class="keychain-stage py-7 sm:py-10 px-2 rounded-3xl bg-gradient-to-br from-[#F8FAFC] via-[#F0F9FF]/60 to-[#FDF2F8]/70 border border-sky-100/80 flex flex-col items-center justify-center overflow-x-auto">
+                <div class="text-[11px] font-bold text-[#64748B] mb-3 px-3 py-1 rounded-full bg-white border border-sky-100 shadow-sm">
+                  1 Seamless Merged Keychain • 6 Keys (2 × 3-Key Pack)
+                </div>
+                <div id="hero-keychain-wrapper" class="animate-gentle-float inline-flex items-center select-none px-2">
+                  <!-- Populated dynamically by JS -->
+                </div>
+              </div>
+
+              <!-- Quick Demo Word & Vibe Switcher -->
+              <div class="mt-5 flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100">
+                <div class="flex flex-wrap items-center justify-center gap-1.5">
+                  <span class="text-xs font-bold text-[#64748B] mr-1">Demo:</span>
+                  <button onclick="setHeroWord('FIDGET')" id="hero-word-fidget" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-[#0EA5E9] border border-sky-200 transition">FIDGET</button>
+                  <button onclick="setHeroWord('CALM★')" id="hero-word-calm" class="px-3 py-1 rounded-full text-xs font-bold bg-[#FDF2F8] text-[#EC4899] border border-pink-200 hover:bg-pink-100 transition">CALM ★</button>
+                  <span class="text-slate-200 mx-1">|</span>
+                  <button onclick="setHeroDemoTheme('pastelRainbow')" class="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F5F3FF] text-[#6366F1] border border-violet-200 hover:bg-violet-100 transition">Rainbow</button>
+                  <button onclick="setHeroDemoTheme('cottonCandy')" class="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FDF2F8] text-[#EC4899] border border-pink-200 hover:bg-pink-100 transition">Cotton Candy</button>
+                  <button onclick="setHeroDemoTheme('matchaCloud')" class="px-2.5 py-1 rounded-full text-xs font-bold bg-[#ECFDF5] text-emerald-600 border border-emerald-200 hover:bg-emerald-100 transition">Matcha</button>
+                </div>
+                <p class="text-[11px] text-[#94A3B8] font-medium">
+                  Keys <kbd class="px-1.5 py-0.5 rounded bg-sky-50 border border-sky-200 text-[#475569] font-bold">1</kbd>–<kbd class="px-1.5 py-0.5 rounded bg-sky-50 border border-sky-200 text-[#475569] font-bold">6</kbd> work too!
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. WHY FIDGET 3D BEATS GENERIC CLICKERS -->
+    <section id="why-fidget-3d" class="py-16 sm:py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <span class="inline-block px-4 py-1.5 rounded-full bg-[#FDF2F8] border border-pink-200/80 text-[#EC4899] font-bold text-xs uppercase tracking-wider mb-3">
+            The Fidget 3D Advantage
+          </span>
+          <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-[2.6rem] text-[#334155] leading-tight">
+            Why Fidget 3D Beats Generic Clickers
+          </h2>
+          <p class="mt-4 text-base sm:text-lg text-[#64748B]">
+            Why carry boring transparent 1.5-star plastic clickers or juggle two separate keychains? We 3D-print your entire name as <strong class="text-[#334155]">one sleek, vibrant merged keychain</strong>.
+          </p>
+        </div>
+
+        <!-- Visual Side-by-Side Comparison Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+          <!-- Fidget 3D Card -->
+          <div class="rounded-3xl bg-gradient-to-br from-[#F0F9FF] via-[#FFFDF9] to-[#F5F3FF] border-2 border-sky-200 p-6 sm:p-7 shadow-soft">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">
+                ★ Fidget 3D Custom
+              </span>
+              <span class="text-xs font-bold text-[#0EA5E9]">1 Merged Bar • Full Color</span>
+            </div>
+            <h3 class="font-display font-bold text-2xl text-[#334155]">Seamless Merged Name Keychain</h3>
+            <p class="text-sm text-[#64748B] mt-1 mb-5">Your full name merged into one sturdy custom bar with custom colors &amp; crisp switches.</p>
+
+            <!-- Live Mini Merged 6-Key Preview -->
+            <div class="flex justify-center py-5 px-3 rounded-2xl bg-white/90 border border-sky-100 mb-5 overflow-x-auto">
+              <div id="compare-fidget3d-preview"></div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 text-xs font-bold">
+              <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-700">Single Continuous Bar</span>
+              <span class="px-3 py-1 rounded-full bg-pink-100 text-pink-600">Per-Key Color Choice</span>
+              <span class="px-3 py-1 rounded-full bg-violet-100 text-violet-700">Free Bonus Icon Keys</span>
+            </div>
+          </div>
+
+          <!-- Generic Cheap Clear Clicker Card -->
+          <div class="rounded-3xl bg-[#F8FAFC] border-2 border-slate-200/80 p-6 sm:p-7">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 text-[#64748B] font-bold text-xs">
+                Generic Clear Clickers
+              </span>
+              <span class="text-xs font-semibold text-[#94A3B8]">1.5 ★ Typical Rating</span>
+            </div>
+            <h3 class="font-display font-bold text-2xl text-[#64748B]">Mass-Produced Clear Plastic</h3>
+            <p class="text-sm text-[#94A3B8] mt-1 mb-5">Plain transparent acrylic with zero name customization, mushy keys, and brittle housings.</p>
+
+            <!-- Plain Clear 4-Key Generic Illustration -->
+            <div class="flex justify-center py-5 px-3 rounded-2xl bg-white/75 border border-slate-200/70 mb-5">
+              <div class="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-2xl bg-slate-100/70 border-2 border-dashed border-slate-300">
+                <div class="w-9 h-9 rounded-lg bg-white/60 border border-slate-300 flex items-center justify-center text-xs font-bold text-slate-400">—</div>
+                <div class="w-9 h-9 rounded-lg bg-white/60 border border-slate-300 flex items-center justify-center text-xs font-bold text-slate-400">—</div>
+                <div class="w-9 h-9 rounded-lg bg-white/60 border border-slate-300 flex items-center justify-center text-xs font-bold text-slate-400">—</div>
+                <div class="w-9 h-9 rounded-lg bg-white/60 border border-slate-300 flex items-center justify-center text-xs font-bold text-slate-400">—</div>
+                <div class="ml-1 text-slate-300 font-bold text-lg">◯</div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 text-xs font-semibold text-[#94A3B8]">
+              <span class="px-3 py-1 rounded-full bg-white border border-slate-200">No Color Choices</span>
+              <span class="px-3 py-1 rounded-full bg-white border border-slate-200">Blank / No Name</span>
+              <span class="px-3 py-1 rounded-full bg-white border border-slate-200">Mushy Rattling Keys</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 Key Advantages Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
+          <div class="p-5 rounded-3xl bg-[#F0F9FF] border border-sky-100 hover:-translate-y-1 transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-xl mb-3">🎨</div>
+            <h3 class="font-display font-bold text-base text-[#334155]">Vibrant Multi-Color 3D Printing</h3>
+            <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">Customize every individual keycap and merged housing color instead of boring transparent plastic.</p>
+          </div>
+          <div class="p-5 rounded-3xl bg-[#FDF2F8] border border-pink-100 hover:-translate-y-1 transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-xl mb-3">🔗</div>
+            <h3 class="font-display font-bold text-base text-[#334155]">Seamless Single-Bar Merging</h3>
+            <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">Your entire name merges into ONE sturdy continuous keychain—no juggling separate keychains!</p>
+          </div>
+          <div class="p-5 rounded-3xl bg-[#FFFBEB] border border-amber-100 hover:-translate-y-1 transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-xl mb-3">★</div>
+            <h3 class="font-display font-bold text-base text-[#334155]">Bonus Custom Icon Keys</h3>
+            <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">Fill any spare slot on your merged bar with hearts, stars, lightning bolts, or custom symbols.</p>
+          </div>
+          <div class="p-5 rounded-3xl bg-[#F5F3FF] border border-violet-100 hover:-translate-y-1 transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-xl mb-3">⌨️</div>
+            <h3 class="font-display font-bold text-base text-[#334155]">Crisp Mechanical Switches</h3>
+            <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">Choose Clicky Blue, Tactile Lavender, or Quiet Peach switches vs cheap mushy clickers.</p>
+          </div>
+          <div class="p-5 rounded-3xl bg-[#ECFDF5] border border-emerald-100 hover:-translate-y-1 transition-all sm:col-span-2 lg:col-span-1">
+            <div class="w-11 h-11 rounded-2xl bg-white shadow-sm flex items-center justify-center text-xl mb-3">🌿</div>
+            <h3 class="font-display font-bold text-base text-[#334155]">Eco-Friendly PLA+ Finish</h3>
+            <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">Smooth matte pastel PLA+ built for daily pocket, bag, and key carry with premium clasps.</p>
+          </div>
+        </div>
+
+        <!-- Clean Light Comparison Table -->
+        <div class="rounded-3xl bg-white border-2 border-sky-100 shadow-soft overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-gradient-to-r from-[#F0F9FF] via-[#FFFDF9] to-[#FDF2F8] border-b border-sky-100">
+                  <th class="py-4 px-5 sm:px-6 font-display font-bold text-sm sm:text-base text-[#334155]">Feature</th>
+                  <th class="py-4 px-5 sm:px-6 font-display font-bold text-sm sm:text-base text-[#0EA5E9] bg-sky-50/70">Fidget 3D (Merged Custom)</th>
+                  <th class="py-4 px-5 sm:px-6 font-display font-bold text-sm sm:text-base text-[#64748B]">Generic Clear Clickers</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
+                <tr class="hover:bg-[#F8FAFC]/70 transition">
+                  <td class="py-4 px-5 sm:px-6 font-bold text-[#334155]">Multi-Color 3D Printing</td>
+                  <td class="py-4 px-5 sm:px-6 bg-sky-50/30 font-semibold text-emerald-600">✓ 10 pastel/bright keycap colors + 6 housing colors</td>
+                  <td class="py-4 px-5 sm:px-6 text-[#64748B]">✕ Plain clear plastic only</td>
+                </tr>
+                <tr class="hover:bg-[#F8FAFC]/70 transition">
+                  <td class="py-4 px-5 sm:px-6 font-bold text-[#334155]">Long Name Support</td>
+                  <td class="py-4 px-5 sm:px-6 bg-sky-50/30 font-semibold text-emerald-600">✓ Seamlessly merges 3, 6, 9, or 12 keys into ONE bar</td>
+                  <td class="py-4 px-5 sm:px-6 text-[#64748B]">✕ Fixed blank layout, zero personalization</td>
+                </tr>
+                <tr class="hover:bg-[#F8FAFC]/70 transition">
+                  <td class="py-4 px-5 sm:px-6 font-bold text-[#334155]">Spare Key Slots</td>
+                  <td class="py-4 px-5 sm:px-6 bg-sky-50/30 font-semibold text-emerald-600">✓ Customizable with stars, hearts, lightning &amp; custom chars</td>
+                  <td class="py-4 px-5 sm:px-6 text-[#64748B]">✕ Not available</td>
+                </tr>
+                <tr class="hover:bg-[#F8FAFC]/70 transition">
+                  <td class="py-4 px-5 sm:px-6 font-bold text-[#334155]">Switch Feel &amp; Sound</td>
+                  <td class="py-4 px-5 sm:px-6 bg-sky-50/30 font-semibold text-emerald-600">✓ Clicky Blue, Tactile Lavender, or Quiet Peach</td>
+                  <td class="py-4 px-5 sm:px-6 text-[#64748B]">✕ Inconsistent mushy switches that pop off</td>
+                </tr>
+                <tr class="hover:bg-[#F8FAFC]/70 transition">
+                  <td class="py-4 px-5 sm:px-6 font-bold text-[#334155]">Durability &amp; Clasp</td>
+                  <td class="py-4 px-5 sm:px-6 bg-sky-50/30 font-semibold text-emerald-600">✓ Eco PLA+ matte body + Silver / Rose Gold / Pearl clasp</td>
+                  <td class="py-4 px-5 sm:px-6 text-[#64748B]">✕ Thin acrylic prone to cracking</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. THE PSYCHOLOGY BEHIND STRESS RELIEF -->
+    <section id="psychology-science" class="py-16 sm:py-24 bg-gradient-to-b from-[#F8FAFC] via-[#F0F9FF]/50 to-[#FFFDF9] border-y border-sky-100/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <span class="inline-block px-4 py-1.5 rounded-full bg-[#F5F3FF] border border-violet-200 text-[#6366F1] font-bold text-xs uppercase tracking-wider mb-3">
+            Science-Backed Stress Relief
+          </span>
+          <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-[2.6rem] text-[#334155] leading-tight">
+            The Psychology Behind Stress Relief
+          </h2>
+          <p class="mt-4 text-base sm:text-lg text-[#64748B]">
+            Tactile mechanical fidgeting isn't just fun—established cognitive and behavioral psychology theories explain how rhythmic clicking lowers stress and sharpens attention.
+          </p>
+        </div>
+
+        <!-- 4 Light Pastel Info Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Card 1: Optimal Stimulation Theory (Yerkes-Dodson Law) -->
+          <article class="rounded-3xl bg-[#F0F9FF] border-2 border-sky-100 p-7 sm:p-8 shadow-soft hover:shadow-card transition-all">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 rounded-2xl bg-white border border-sky-200/80 shadow-sm flex items-center justify-center text-[#0EA5E9] shrink-0">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-white text-[#0EA5E9] font-bold text-xs border border-sky-100">Yerkes-Dodson Law</span>
+            </div>
+            <h3 class="font-display font-bold text-xl sm:text-2xl text-[#334155]">Optimal Stimulation Theory</h3>
+            <p class="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed">
+              According to the Yerkes-Dodson arousal curve, performance and calm peak at a balanced level of sensory stimulation. Small, rhythmic mechanical clicks gently regulate brain arousal—preventing both restless boredom and stressful overwhelm so focus stays steady.
+            </p>
+          </article>
+
+          <!-- Card 2: Cognitive Load & Working Memory Relief -->
+          <article class="rounded-3xl bg-[#F5F3FF] border-2 border-violet-100 p-7 sm:p-8 shadow-soft hover:shadow-card transition-all">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 rounded-2xl bg-white border border-violet-200/80 shadow-sm flex items-center justify-center text-[#6366F1] shrink-0">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-white text-[#6366F1] font-bold text-xs border border-violet-100">Executive Function</span>
+            </div>
+            <h3 class="font-display font-bold text-xl sm:text-2xl text-[#334155]">Cognitive Load &amp; Working Memory Relief</h3>
+            <p class="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed">
+              Suppressing physical restlessness consumes valuable mental bandwidth. Redirecting micro-motor energy into effortless finger clicking frees up prefrontal executive function and working memory—helping you absorb lectures, code, or prepare for exams with ease.
+            </p>
+          </article>
+
+          <!-- Card 3: Sensory Grounding & Proprioceptive Feedback -->
+          <article class="rounded-3xl bg-[#FDF2F8] border-2 border-pink-100 p-7 sm:p-8 shadow-soft hover:shadow-card transition-all">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 rounded-2xl bg-white border border-pink-200/80 shadow-sm flex items-center justify-center text-[#EC4899] shrink-0">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-white text-[#EC4899] font-bold text-xs border border-pink-100">Anxiety Interrupt</span>
+            </div>
+            <h3 class="font-display font-bold text-xl sm:text-2xl text-[#334155]">Sensory Grounding &amp; Proprioceptive Feedback</h3>
+            <p class="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed">
+              The crisp actuation bump and clear acoustic click engage proprioceptive touch and hearing at the same instant. This immediate sensory anchor pulls awareness out of anxious "what-if" spirals and gently grounds your mind in the present moment.
+            </p>
+          </article>
+
+          <!-- Card 4: Micro-Rhythmic Nervous System Regulation -->
+          <article class="rounded-3xl bg-[#ECFDF5] border-2 border-emerald-100 p-7 sm:p-8 shadow-soft hover:shadow-card transition-all">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-14 h-14 rounded-2xl bg-white border border-emerald-200/80 shadow-sm flex items-center justify-center text-emerald-500 shrink-0">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-white text-emerald-600 font-bold text-xs border border-emerald-100">Parasympathetic Calm</span>
+            </div>
+            <h3 class="font-display font-bold text-xl sm:text-2xl text-[#334155]">Micro-Rhythmic Nervous System Regulation</h3>
+            <p class="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed">
+              Predictable, self-paced auditory-tactile cadence signals safety to the autonomic nervous system. Repeating a steady click rhythm naturally slows shallow breathing and nudges the body toward a calmer, restorative parasympathetic response.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. COLOR COMBO INSPIRATION GALLERY -->
+    <section class="py-16 sm:py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-12">
+          <div>
+            <span class="inline-block px-4 py-1.5 rounded-full bg-[#FFFBEB] border border-amber-200 text-amber-600 font-bold text-xs uppercase tracking-wider mb-3">
+              Color Combo Inspiration
+            </span>
+            <h2 class="font-display font-bold text-3xl sm:text-4xl text-[#334155]">Tap Any Pastel Palette to Customize</h2>
+            <p class="mt-2 text-base text-[#64748B]">Click a merged keychain palette below to jump straight to the Customizer with those colors pre-loaded.</p>
+          </div>
+          <button
+            onclick="navigateTo('order')"
+            class="self-start md:self-auto px-5 py-2.5 rounded-full bg-[#F0F9FF] hover:bg-sky-100 border border-sky-200 text-[#0EA5E9] font-bold text-sm transition"
+          >
+            Start From Scratch →
+          </button>
+        </div>
+
+        <div id="inspiration-gallery-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Dynamically populated with 4 merged 6-key previews -->
+        </div>
+
+        <!-- Bottom CTA Banner -->
+        <div class="mt-16 rounded-[2rem] bg-gradient-to-r from-[#F0F9FF] via-[#FDF2F8] to-[#F5F3FF] border-2 border-sky-100 p-8 sm:p-12 text-center shadow-soft">
+          <h2 class="font-display font-bold text-3xl sm:text-4xl text-[#334155]">Merge Your Whole Name Into One Keychain</h2>
+          <p class="mt-3 text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto">
+            Every 3 keys is just <strong class="text-[#334155]">₹199</strong>, and longer names seamlessly fuse into <strong class="text-[#334155]">one continuous pastel keychain</strong> with free customizable bonus icons for spare keys!
+          </p>
+          <button
+            onclick="navigateTo('order')"
+            class="mt-7 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#0EA5E9] via-[#6366F1] to-[#EC4899] text-white font-bold text-base sm:text-lg shadow-indigoGlow hover:brightness-105 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+          >
+            Design Your Merged Keychain — From ₹199
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       PAGE 2: ORDER CUSTOM MERGED KEYCHAIN
+       ========================================================================= -->
+  <main id="page-order" class="hidden page-enter bg-gradient-to-b from-[#F8FAFC] via-[#FFFDF9] to-[#F0F9FF]/45 min-h-screen pb-20">
+
+    <!-- 1. CLEAR MERGED PRICING & RULES BANNER -->
+    <section class="bg-gradient-to-r from-[#F0F9FF] via-[#FDF2F8] to-[#ECFDF5] border-b border-sky-100 py-7 sm:py-9">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-sky-200 text-xs font-bold text-[#0EA5E9] mb-2">
+              <span>✨ Seamless Merged Keychain Studio</span>
+            </div>
+            <h1 class="font-display font-bold text-3xl sm:text-4xl text-[#334155]">
+              Build Your Merged 3D Keychain
+            </h1>
+            <p class="text-sm sm:text-base text-[#64748B] mt-1">
+              <strong class="text-[#334155]">₹199 per 3-key unit</strong> • Longer names automatically <strong class="text-[#6366F1]">merge into ONE single continuous keychain</strong>!
+            </p>
+          </div>
+
+          <!-- Clear Visual Merged Keychain Tier Pills -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div class="bg-white/95 rounded-2xl p-3 border border-sky-100 shadow-sm">
+              <div class="font-display font-bold text-[#334155]">1–3 Letters</div>
+              <div class="text-[#64748B] text-[11px] mt-0.5">1 Bar (3 keys)</div>
+              <div class="mt-1 font-bold text-[#0EA5E9]">₹199</div>
+            </div>
+            <div class="bg-white/95 rounded-2xl p-3 border border-pink-200/80 shadow-sm">
+              <div class="font-display font-bold text-[#334155]">4–6 Letters</div>
+              <div class="text-[#64748B] text-[11px] mt-0.5">1 Merged (6 keys)</div>
+              <div class="mt-1 font-bold text-[#EC4899]">₹398</div>
+            </div>
+            <div class="bg-white/95 rounded-2xl p-3 border border-violet-200/80 shadow-sm">
+              <div class="font-display font-bold text-[#334155]">7–9 Letters</div>
+              <div class="text-[#64748B] text-[11px] mt-0.5">1 Merged (9 keys)</div>
+              <div class="mt-1 font-bold text-[#6366F1]">₹597</div>
+            </div>
+            <div class="bg-white/95 rounded-2xl p-3 border border-emerald-200/80 shadow-sm">
+              <div class="font-display font-bold text-[#334155]">10–12 Letters</div>
+              <div class="text-[#64748B] text-[11px] mt-0.5">1 Mega (12 keys)</div>
+              <div class="mt-1 font-bold text-emerald-600">₹796</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. INTERACTIVE LIVE MERGED CUSTOMIZER & ORDER PANEL -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- LEFT COLUMN: LIVE MERGED PREVIEW & CONTROLS -->
+        <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+
+          <!-- Step 1: Name Input -->
+          <div class="bg-white rounded-3xl border-2 border-sky-100 shadow-soft p-5 sm:p-7">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-sky-100 text-[#0EA5E9] font-display font-bold flex items-center justify-center">1</span>
+                <h2 class="font-display font-bold text-xl text-[#334155]">Type Your Name or Word</h2>
+              </div>
+              <span class="text-xs font-semibold text-[#94A3B8]">A–Z &amp; 0–9 • Max 12 letters</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+              <input
+                id="custom-name-input"
+                type="text"
+                maxlength="16"
+                value="PRIYA"
+                placeholder="Type your name (e.g., SAM, PRIYA, HRIDAY, CHANDNI)"
+                oninput="handleNameInput(this.value)"
+                class="flex-1 px-5 py-3.5 rounded-2xl bg-[#F8FAFC] border-2 border-sky-200 focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-display font-bold text-xl tracking-widest uppercase text-[#334155] placeholder:text-[#94A3B8] placeholder:font-sans placeholder:tracking-normal placeholder:text-sm transition"
+              />
+              <button
+                type="button"
+                onclick="handleNameInput('')"
+                class="px-4 py-3 rounded-2xl bg-[#F8FAFC] hover:bg-pink-50 border border-slate-200 hover:border-pink-200 text-xs font-bold text-[#64748B] hover:text-[#EC4899] transition"
+              >
+                Clear
+              </button>
+            </div>
+
+            <!-- Gentle Hint when spaces or extra characters are stripped -->
+            <p id="input-strip-hint" class="hidden mt-2 text-xs font-semibold text-[#6366F1] bg-[#F5F3FF] border border-violet-200/70 rounded-xl px-3 py-1.5">
+              ✨ Spaces &amp; special characters were cleanly removed so every key fits snugly in your merged bar (max 12 letters).
+            </p>
+
+            <!-- Quick Example Pills -->
+            <div class="mt-3.5 flex flex-wrap items-center gap-2">
+              <span class="text-xs font-bold text-[#64748B]">Quick examples:</span>
+              <button type="button" onclick="applyNamePreset('SAM')" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#F0F9FF] hover:bg-sky-100 text-[#0EA5E9] border border-sky-200/80 transition">SAM (3 keys • ₹199)</button>
+              <button type="button" onclick="applyNamePreset('PRIYA')" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#FDF2F8] hover:bg-pink-100 text-[#EC4899] border border-pink-200/80 transition">PRIYA (5 letters + 1 bonus • ₹398)</button>
+              <button type="button" onclick="applyNamePreset('HRIDAY')" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#F5F3FF] hover:bg-violet-100 text-[#6366F1] border border-violet-200/80 transition">HRIDAY (6 keys merged • ₹398)</button>
+              <button type="button" onclick="applyNamePreset('CHANDNI')" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#ECFDF5] hover:bg-emerald-100 text-emerald-600 border border-emerald-200/80 transition">CHANDNI (7 letters + 2 bonus • ₹597)</button>
+            </div>
+
+            <!-- Real-Time Auto-Calculator Strip -->
+            <div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="rounded-2xl bg-[#F8FAFC] border border-slate-100 p-3 text-center">
+                <div class="text-[11px] font-bold uppercase tracking-wide text-[#94A3B8]">Your Letters</div>
+                <div id="stat-letters" class="font-display font-bold text-2xl text-[#334155] mt-0.5">5</div>
+              </div>
+              <div class="rounded-2xl bg-[#F0F9FF] border border-sky-100 p-3 text-center">
+                <div class="text-[11px] font-bold uppercase tracking-wide text-[#0EA5E9]">Merged Keys</div>
+                <div id="stat-total-keys" class="font-display font-bold text-2xl text-[#0EA5E9] mt-0.5">6</div>
+              </div>
+              <div class="rounded-2xl bg-[#FDF2F8] border border-pink-100 p-3 text-center">
+                <div class="text-[11px] font-bold uppercase tracking-wide text-[#EC4899]">Bonus Keys</div>
+                <div id="stat-bonus" class="font-display font-bold text-2xl text-[#EC4899] mt-0.5">1</div>
+              </div>
+              <div class="rounded-2xl bg-[#ECFDF5] border border-emerald-100 p-3 text-center">
+                <div class="text-[11px] font-bold uppercase tracking-wide text-emerald-600">Total Price</div>
+                <div id="stat-price" class="font-display font-bold text-2xl text-emerald-600 mt-0.5">₹398</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Live 3D Visual Preview Stage (ONE SINGLE CONTINUOUS BAR) -->
+          <div class="bg-white rounded-3xl border-2 border-sky-100 shadow-soft p-5 sm:p-7">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-xl bg-pink-100 text-[#EC4899] font-display font-bold flex items-center justify-center">2</span>
+                <h2 class="font-display font-bold text-xl text-[#334155]">Live 3D Merged Keychain Preview</h2>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-[#0EA5E9] text-xs font-bold border border-sky-100">
+                <span>Editing:</span>
+                <span id="selected-key-label">Key #1 (P)</span>
+              </span>
+            </div>
+
+            <!-- Soft Pill Badge + Friendly Merged Explanation Callout -->
+            <div class="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3.5 rounded-2xl bg-gradient-to-r from-[#F0F9FF] via-[#FFFDF9] to-[#F5F3FF] border border-sky-100">
+              <span id="merged-pill-badge" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white text-[#6366F1] font-display font-bold text-xs sm:text-sm border border-violet-200/80 shadow-sm self-start">
+                🔗 1 Seamless Merged Keychain • 6 Keys (2 × 3-Key Pack)
+              </span>
+              <p id="merged-callout-text" class="text-xs text-[#64748B] font-medium">
+                All 2 units fuse into <strong>one sleek continuous bar</strong> instead of separate pieces!
+              </p>
+            </div>
+
+            <!-- Responsive Horizontal Scrollable Stage for 3, 6, 9, or 12 Merged Keys -->
+            <div class="keychain-stage rounded-3xl bg-gradient-to-br from-[#F8FAFC] via-[#F0F9FF]/60 to-[#FDF2F8]/65 border border-sky-100/90 py-8 px-4 overflow-x-auto">
+              <div id="live-merged-keychain" class="min-w-max mx-auto flex justify-center items-center py-2">
+                <!-- Single continuous merged keychain rendered via JS -->
+              </div>
+            </div>
+
+            <p class="mt-3 text-center text-xs text-[#94A3B8] font-medium">
+              Tap any key on the merged bar above to hear your mechanical switch click &amp; select that key to paint its color!
+            </p>
+
+            <!-- Dynamic Bonus Key Customizer Panel (Visible whenever totalKeys - nameLength > 0) -->
+            <div id="bonus-key-panel" class="mt-6 rounded-3xl bg-gradient-to-r from-[#FFFBEB] via-[#FDF2F8] to-[#F5F3FF] border-2 border-pink-200/80 p-5">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-1 rounded-full bg-white text-[#EC4899] font-bold text-xs shadow-sm border border-pink-100">★ Free Bonus Slot!</span>
+                  <h3 id="bonus-panel-title" class="font-display font-bold text-base sm:text-lg text-[#334155]">Customize Your Extra Key</h3>
+                </div>
+                <div id="bonus-slot-selector" class="flex flex-wrap items-center gap-1.5">
+                  <!-- Populated when >1 bonus key exists -->
+                </div>
+              </div>
+              <p class="text-xs sm:text-sm text-[#64748B] mb-3.5">
+                Your merged keychain has leftover slot(s)! Pick any cute symbol below or type a custom single letter/number to print on it:
+              </p>
+
+              <!-- 12 Cute Symbol Picker Pills -->
+              <div id="bonus-symbols-grid" class="flex flex-wrap items-center gap-2">
+                <!-- Rendered via JS -->
+              </div>
+
+              <!-- Custom Single Character Input -->
+              <div class="mt-3.5 flex flex-wrap items-center gap-2.5">
+                <label for="bonus-custom-char" class="text-xs font-bold text-[#64748B]">Or type any custom single character / number:</label>
+                <input
+                  id="bonus-custom-char"
+                  type="text"
+                  maxlength="2"
+                  placeholder="e.g. 7 or !"
+                  oninput="setCustomBonusChar(this.value)"
+                  class="w-24 px-3 py-1.5 rounded-xl bg-white border border-pink-200 focus:border-[#EC4899] focus:outline-none text-center font-display font-bold text-sm text-[#334155] uppercase"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Colors, Merged Housing, Switch Sound & Clasp Finish -->
+          <div class="bg-white rounded-3xl border-2 border-sky-100 shadow-soft p-5 sm:p-7 space-y-6">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-xl bg-violet-100 text-[#6366F1] font-display font-bold flex items-center justify-center">3</span>
+              <h2 class="font-display font-bold text-xl text-[#334155]">Colors, Switch Feel &amp; Clasp Finish</h2>
+            </div>
+
+            <!-- 3A. Quick Palette Presets -->
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2.5">Quick Palette Presets</label>
+              <div id="theme-presets-row" class="flex flex-wrap gap-2">
+                <!-- 6 Quick Presets Rendered via JS -->
+              </div>
+            </div>
+
+            <!-- 3B. Per-Key Individual Keycap Colors -->
+            <div class="pt-4 border-t border-slate-100">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <label class="text-xs font-bold uppercase tracking-wider text-[#64748B]">
+                  Keycap PLA Color for <span id="color-picker-target" class="text-[#0EA5E9]">Key #1 (P)</span>
+                </label>
+                <button
+                  type="button"
+                  onclick="applyActiveColorToAllKeys()"
+                  class="text-xs font-bold text-[#0EA5E9] hover:text-[#6366F1] bg-sky-50 hover:bg-sky-100 px-3 py-1 rounded-full transition"
+                >
+                  Apply Selected Color to All Keys
+                </button>
+              </div>
+              <div id="keycap-colors-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-2.5">
+                <!-- 10 PLA Filament Colors -->
+              </div>
+            </div>
+
+            <!-- 3C. Merged Housing Base Color (6 Light Options) -->
+            <div class="pt-4 border-t border-slate-100">
+              <label class="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-3">
+                Merged Housing Base Color (One Seamless Frame)
+              </label>
+              <div id="housing-colors-grid" class="flex flex-wrap gap-2.5">
+                <!-- 6 Merged Housing Colors -->
+              </div>
+            </div>
+
+            <!-- 3D. Mechanical Switch Sound & Feel -->
+            <div class="pt-4 border-t border-slate-100">
+              <div class="flex items-center justify-between mb-3">
+                <label class="text-xs font-bold uppercase tracking-wider text-[#64748B]">Switch Sound &amp; Feel (Click to Hear Live Preview)</label>
+                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full">Included Free</span>
+              </div>
+              <div id="switch-selector-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- 3 Switch Options -->
+              </div>
+            </div>
+
+            <!-- 3E. Keychain Clasp Finish -->
+            <div class="pt-4 border-t border-slate-100">
+              <label class="block text-xs font-bold uppercase tracking-wider text-[#64748B] mb-3">
+                Keychain Clasp Finish
+              </label>
+              <div id="clasp-selector-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- 3 Clasp Finishes -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: STICKY ORDER SUMMARY & CHECKOUT PANEL -->
+        <div class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-6">
+
+          <!-- Order Summary Card -->
+          <div class="bg-white rounded-3xl border-2 border-sky-200/80 shadow-card p-5 sm:p-6">
+            <div class="flex items-center justify-between gap-2 pb-4 border-b border-slate-100">
+              <h2 class="font-display font-bold text-xl text-[#334155]">Order Summary</h2>
+              <span id="shipping-status-badge" class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 font-bold text-[11px] border border-emerald-200/80">
+                ✓ Free Shipping
+              </span>
+            </div>
+
+            <!-- Single Merged Item Breakdown -->
+            <div class="py-4 space-y-3">
+              <div>
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="font-display font-bold text-base text-[#334155]">1 Merged Custom Keychain</div>
+                    <div id="summary-word-display" class="text-xs font-bold text-[#6366F1] mt-0.5">"PRIYA" + ★</div>
+                  </div>
+                  <span id="summary-item-price" class="font-display font-bold text-base text-[#334155]">₹398</span>
+                </div>
+                <div id="summary-config-line" class="text-xs text-[#64748B] mt-1">
+                  6 Keys Merged (2 × 3-Key Unit @ ₹199)
+                </div>
+
+                <!-- Mini Keycap Swatch Sequence -->
+                <div id="summary-key-pills" class="mt-3 flex flex-wrap gap-1.5">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+
+              <!-- Spec Rows -->
+              <div class="pt-3 border-t border-slate-100 space-y-2 text-xs sm:text-sm">
+                <div class="flex justify-between text-[#64748B]">
+                  <span>Merged Housing</span>
+                  <span id="summary-housing" class="font-bold text-[#334155]">Pure White</span>
+                </div>
+                <div class="flex justify-between text-[#64748B]">
+                  <span>Switch Feel</span>
+                  <span id="summary-switch" class="font-bold text-[#334155]">Clicky Blue</span>
+                </div>
+                <div class="flex justify-between text-[#64748B]">
+                  <span>Clasp Finish</span>
+                  <span id="summary-clasp" class="font-bold text-[#334155]">Silver Chrome</span>
+                </div>
+                <div class="flex justify-between text-[#64748B]">
+                  <span>Delivery</span>
+                  <span id="summary-shipping-line" class="font-bold text-emerald-600">FREE (Merged ₹398+)</span>
+                </div>
+              </div>
+
+              <!-- Total Payable -->
+              <div class="flex justify-between items-center pt-3.5 border-t-2 border-dashed border-sky-100">
+                <span class="font-display font-bold text-lg text-[#334155]">Total Price</span>
+                <span id="summary-total" class="font-display font-bold text-2xl text-[#0EA5E9]">₹398</span>
+              </div>
+              <p id="shipping-upsell-note" class="hidden text-[11px] text-[#6366F1] bg-[#F5F3FF] rounded-xl px-3 py-1.5 font-semibold text-center">
+                Tip: Flat ₹49 delivery on 3-key orders — Merged 6+ keychains (₹398+) unlock FREE shipping!
+              </p>
+            </div>
+          </div>
+
+          <!-- Customer Details Checkout Form -->
+          <form id="checkout-form" onsubmit="handleOrderSubmit(event)" novalidate class="bg-white rounded-3xl border-2 border-sky-100 shadow-soft p-5 sm:p-6 space-y-4">
+            <h3 class="font-display font-bold text-xl text-[#334155]">Customer Details</h3>
+
+            <!-- Inline Validation Error Box (No alert()) -->
+            <div id="form-error-box" class="hidden rounded-2xl bg-[#FDF2F8] border border-pink-200 p-3.5 text-xs font-semibold text-[#EC4899]"></div>
+
+            <div>
+              <label for="cust-name" class="block text-xs font-bold text-[#64748B] mb-1">Full Name *</label>
+              <input id="cust-name" type="text" required placeholder="e.g., Priya Sharma" class="w-full px-4 py-2.5 rounded-xl bg-[#F8FAFC] border border-slate-200 focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-sm text-[#334155]" />
+            </div>
+
+            <div>
+              <label for="cust-phone" class="block text-xs font-bold text-[#64748B] mb-1">Phone / WhatsApp Number *</label>
+              <input id="cust-phone" type="tel" required placeholder="10-digit mobile number" class="w-full px-4 py-2.5 rounded-xl bg-[#F8FAFC] border border-slate-200 focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-sm text-[#334155]" />
+            </div>
+
+            <div>
+              <label for="cust-address" class="block text-xs font-bold text-[#64748B] mb-1">Delivery Address *</label>
+              <textarea id="cust-address" rows="2" required placeholder="Flat / House No., Street, Area, Landmark" class="w-full px-4 py-2.5 rounded-xl bg-[#F8FAFC] border border-slate-200 focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-sm text-[#334155] resize-none"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="cust-city" class="block text-xs font-bold text-[#64748B] mb-1">City *</label>
+                <input id="cust-city" type="text" required placeholder="Mumbai" class="w-full px-4 py-2.5 rounded-xl bg-[#F8FAFC] border border-slate-200 focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-sm text-[#334155]" />
+              </div>
+              <div>
+                <label for="cust-pincode" class="block text-xs font-bold text-[#64748B] mb-1">Pincode *</label>
+                <input id="cust-pincode" type="text" maxlength="6" required placeholder="400001" class="w-full px-4 py-2.5 rounded-xl bg-[#F8FAFC] border border-slate-200 focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-sm text-[#334155]" />
+              </div>
+            </div>
+
+            <!-- Payment Method Pills -->
+            <div>
+              <label class="block text-xs font-bold text-[#64748B] mb-2">Payment Preference</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" onclick="selectPayment('UPI (GPay / PhonePe)')" data-pay="UPI (GPay / PhonePe)" class="pay-pill py-2.5 px-2 rounded-xl text-xs font-bold border-2 border-[#0EA5E9] bg-sky-50 text-[#0EA5E9] transition">UPI</button>
+                <button type="button" onclick="selectPayment('Cash on Delivery')" data-pay="Cash on Delivery" class="pay-pill py-2.5 px-2 rounded-xl text-xs font-bold border border-slate-200 bg-[#F8FAFC] text-[#64748B] hover:border-sky-200 transition">COD</button>
+                <button type="button" onclick="selectPayment('Card')" data-pay="Card" class="pay-pill py-2.5 px-2 rounded-xl text-xs font-bold border border-slate-200 bg-[#F8FAFC] text-[#64748B] hover:border-sky-200 transition">Card</button>
+              </div>
+            </div>
+
+            <div>
+              <label for="cust-note" class="block text-xs font-bold text-[#64748B] mb-1">Optional Special Note</label>
+              <input id="cust-note" type="text" placeholder="Gift wrap, birthday note, etc." class="w-full px-4 py-2.5 rounded-xl bg-[#F8FAFC] border border-slate-200 focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-sm text-[#334155]" />
+            </div>
+
+            <button
+              type="submit"
+              id="place-order-btn"
+              class="w-full py-4 rounded-2xl bg-gradient-to-r from-[#0EA5E9] via-[#6366F1] to-[#EC4899] text-white font-display font-bold text-lg shadow-indigoGlow hover:brightness-105 active:scale-[0.99] transition-all"
+            >
+              Place Custom Order — ₹398
+            </button>
+
+            <p class="text-[11px] text-center text-[#94A3B8]">
+              3D-printed as one continuous merged keychain • Hand-tested in India
+            </p>
+          </form>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+       LIGHT AIRY FOOTER (ZERO BLACK)
+       ========================================================================= -->
+  <footer class="bg-[#F8FAFC] border-t border-sky-100 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-200 via-indigo-200 to-pink-200 p-1 shadow-sm">
+          <div class="w-full h-full rounded-lg bg-white flex items-center justify-center font-display font-bold text-xs text-[#334155]">F3D</div>
+        </div>
+        <div>
+          <div class="font-display font-bold text-lg text-[#334155] leading-none">Fidget <span class="text-[#0EA5E9]">3D</span></div>
+          <p class="text-xs text-[#64748B]">Seamless Merged 3D-Printed Fidget Keychains</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-5 text-xs font-bold text-[#64748B]">
+        <button onclick="navigateTo('home')" class="hover:text-[#0EA5E9] transition">Home</button>
+        <button onclick="navigateTo('order')" class="hover:text-[#0EA5E9] transition">Order Custom Keychain</button>
+        <a href="#psychology-science" onclick="navigateTo('home')" class="hover:text-[#0EA5E9] transition">Stress Relief Science</a>
+      </div>
+
+      <p class="text-xs text-[#94A3B8]">© 2026 Fidget 3D • Crafted in Pastel Color</p>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       LIGHT FROSTED-GLASS ORDER CONFIRMATION MODAL (NO BLACK BACKDROP)
+       ========================================================================= -->
+  <div id="order-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 light-modal-backdrop overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="bg-white rounded-[2rem] border-2 border-sky-200 shadow-card max-w-xl w-full p-6 sm:p-8 my-8 page-enter relative">
+      <button onclick="closeOrderModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#F8FAFC] hover:bg-pink-50 text-[#64748B] hover:text-[#EC4899] flex items-center justify-center font-bold transition" aria-label="Close modal">
+        ✕
+      </button>
+
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-[#ECFDF5] via-[#F0F9FF] to-[#FDF2F8] border-2 border-emerald-200 flex items-center justify-center text-3xl shadow-sm mb-3">
+          🎉
+        </div>
+        <span id="modal-order-id" class="inline-block px-4 py-1 rounded-full bg-[#F0F9FF] border border-sky-200 text-[#0EA5E9] font-bold text-xs tracking-wider mb-2">
+          ORDER #F3D-0000
+        </span>
+        <h2 id="modal-title" class="font-display font-bold text-2xl sm:text-3xl text-[#334155]">
+          Your Merged Keychain Is Ordered!
+        </h2>
+        <p class="text-sm text-[#64748B] mt-1">
+          We'll 3D-print your custom name as one seamless pastel keychain bar.
+        </p>
+      </div>
+
+      <!-- Visual Miniature Preview of Exact Merged Keychain -->
+      <div class="mt-5 p-4 rounded-2xl bg-gradient-to-br from-[#F8FAFC] via-[#F0F9FF]/60 to-[#FDF2F8]/60 border border-sky-100 overflow-x-auto">
+        <div id="modal-merged-visual" class="min-w-max mx-auto flex justify-center py-2">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Full Order Breakdown -->
+      <div id="modal-details-box" class="mt-4 p-4 rounded-2xl bg-[#F8FAFC] border border-slate-100 text-xs sm:text-sm text-[#64748B] space-y-1.5">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Copied Confirmation Banner -->
+      <div id="copy-toast" class="hidden mt-3 text-center text-xs font-bold text-emerald-600 bg-[#ECFDF5] border border-emerald-200 rounded-xl py-2">
+        ✓ Order summary copied to your clipboard!
+      </div>
+
+      <!-- Modal Buttons -->
+      <div class="mt-5 flex flex-col sm:flex-row gap-2.5">
+        <button
+          type="button"
+          onclick="copyOrderSummary()"
+          class="flex-1 py-3 px-4 rounded-2xl bg-[#F0F9FF] hover:bg-sky-100 border border-sky-200 text-[#0EA5E9] font-bold text-sm transition flex items-center justify-center gap-2"
+        >
+          <span>📋 Copy Order Summary</span>
+        </button>
+        <button
+          type="button"
+          onclick="closeOrderModal()"
+          class="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-[#0EA5E9] to-[#6366F1] text-white font-bold text-sm shadow-indigoGlow hover:brightness-105 transition"
+        >
+          Design Another
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       APPLICATION JAVASCRIPT: SOUND SYNTHESIS, MERGED 3D ENGINE & CHECKOUT
+       ========================================================================= -->
+  <script>
+    /* =========================================================================
+       1. DESIGN TOKENS & CATALOG DATA (100% LIGHT PASTEL PALETTE, NO BLACK)
+       ========================================================================= */
+    const KEYCAP_COLORS = [
+      { id: 'pureWhite',  name: 'Pure White',    light: '#FFFFFF', main: '#F8FAFC', dishTop: '#FFFFFF', depth: '#CBD5E1', text: '#334155', swatch: '#FFFFFF', border: '#CBD5E1' },
+      { id: 'blushPink',  name: 'Blush Pink',    light: '#FCE7F3', main: '#FBCFE8', dishTop: '#FDF2F8', depth: '#F472B6', text: '#831843', swatch: '#FBCFE8', border: '#F472B6' },
+      { id: 'skyBlue',    name: 'Sky Blue',      light: '#E0F2FE', main: '#BAE6FD', dishTop: '#F0F9FF', depth: '#38BDF8', text: '#0C4A6E', swatch: '#BAE6FD', border: '#38BDF8' },
+      { id: 'mintGreen',  name: 'Mint Green',    light: '#D1FAE5', main: '#A7F3D0', dishTop: '#ECFDF5', depth: '#34D399', text: '#065F46', swatch: '#A7F3D0', border: '#34D399' },
+      { id: 'lavender',   name: 'Lavender',      light: '#EDE9FE', main: '#DDD6FE', dishTop: '#F5F3FF', depth: '#A78BFA', text: '#4C1D95', swatch: '#DDD6FE', border: '#A78BFA' },
+      { id: 'butter',     name: 'Butter Yellow', light: '#FEF9C3', main: '#FEF08A', dishTop: '#FFFBEB', depth: '#FACC15', text: '#713F12', swatch: '#FEF08A', border: '#EAB308' },
+      { id: 'peach',      name: 'Soft Peach',    light: '#FFEDD5', main: '#FED7AA', dishTop: '#FFF7ED', depth: '#FB923C', text: '#7C2D12', swatch: '#FED7AA', border: '#FB923C' },
+      { id: 'periwinkle', name: 'Periwinkle',    light: '#E0E7FF', main: '#C7D2FE', dishTop: '#EEF2FF', depth: '#818CF8', text: '#312E81', swatch: '#C7D2FE', border: '#818CF8' },
+      { id: 'coralPink',  name: 'Coral Rose',    light: '#FFE4E6', main: '#FECDD3', dishTop: '#FFF1F2', depth: '#FB7185', text: '#881337', swatch: '#FECDD3', border: '#FB7185' },
+      { id: 'aqua',       name: 'Aqua Mint',     light: '#CCFBF1', main: '#99F6E4', dishTop: '#F0FDFA', depth: '#2DD4BF', text: '#115E59', swatch: '#99F6E4', border: '#2DD4BF' }
+    ];
+
+    const HOUSING_COLORS = [
+      { id: 'pureWhite',    name: 'Pure White',    bg: '#FFFFFF', depth: '#CBD5E1', swatch: '#FFFFFF', border: '#CBD5E1' },
+      { id: 'softMint',     name: 'Soft Mint',     bg: '#ECFDF5', depth: '#6EE7B7', swatch: '#A7F3D0', border: '#34D399' },
+      { id: 'blushPink',    name: 'Blush Pink',    bg: '#FDF2F8', depth: '#F9A8D4', swatch: '#FBCFE8', border: '#F472B6' },
+      { id: 'skyBlue',      name: 'Sky Blue',      bg: '#F0F9FF', depth: '#7DD3FC', swatch: '#BAE6FD', border: '#38BDF8' },
+      { id: 'lavenderMist', name: 'Lavender Mist', bg: '#F5F3FF', depth: '#C4B5FD', swatch: '#DDD6FE', border: '#A78BFA' },
+      { id: 'butterCream',  name: 'Butter Cream',  bg: '#FFFBEB', depth: '#FDE047', swatch: '#FEF08A', border: '#FACC15' }
+    ];
+
+    const SWITCH_TYPES = [
+      {
+        id: 'blue',
+        name: 'Clicky Blue',
+        desc: 'Crisp classic keyboard click — maximum tactile joy',
+        tint: '#38BDF8'
+      },
+      {
+        id: 'lavender',
+        name: 'Tactile Lavender',
+        desc: 'Soft tactile bump with balanced, desk-friendly snap',
+        tint: '#A78BFA'
+      },
+      {
+        id: 'peach',
+        name: 'Quiet Peach',
+        desc: 'Silky smooth press with a gentle muted thock',
+        tint: '#FB923C'
+      }
+    ];
+
+    const CLASP_FINISHES = [
+      {
+        id: 'silver',
+        name: 'Silver Chrome',
+        desc: 'Classic polished silver split-ring',
+        stops: ['#FFFFFF', '#CBD5E1', '#E2E8F0', '#94A3B8'],
+        eyeletFill: '#E2E8F0',
+        eyeletStroke: '#94A3B8',
+        swatch: 'linear-gradient(135deg, #F8FAFC, #CBD5E1)'
+      },
+      {
+        id: 'roseGold',
+        name: 'Rose Gold',
+        desc: 'Warm blush metallic shimmer',
+        stops: ['#FFF1F2', '#FDA4AF', '#FECDD3', '#E11D48'],
+        eyeletFill: '#FFE4E6',
+        eyeletStroke: '#FB7185',
+        swatch: 'linear-gradient(135deg, #FFE4E6, #FDA4AF)'
+      },
+      {
+        id: 'pastelPearl',
+        name: 'Pastel Pearl',
+        desc: 'Soft iridescent cream-lavender pearl',
+        stops: ['#FFFFFF', '#DDD6FE', '#BAE6FD', '#A5B4FC'],
+        eyeletFill: '#F5F3FF',
+        eyeletStroke: '#A78BFA',
+        swatch: 'linear-gradient(135deg, #FDF2F8, #DDD6FE, #BAE6FD)'
+      }
+    ];
+
+    const THEME_PRESETS = {
+      pastelRainbow: {
+        name: 'Rainbow Pastel',
+        tagline: 'Cheerful full-spectrum pastel keys on snow white',
+        keys: ['blushPink', 'peach', 'butter', 'mintGreen', 'skyBlue', 'lavender'],
+        housing: 'pureWhite',
+        cardBg: 'from-[#FDF2F8] via-[#FFFBEB] to-[#F0F9FF]'
+      },
+      cottonCandy: {
+        name: 'Cotton Candy',
+        tagline: 'Dreamy blush pink, sky blue & lavender swirl',
+        keys: ['blushPink', 'skyBlue', 'lavender', 'blushPink', 'skyBlue', 'lavender'],
+        housing: 'pureWhite',
+        cardBg: 'from-[#FDF2F8] to-[#F0F9FF]'
+      },
+      matchaMint: {
+        name: 'Matcha Mint',
+        tagline: 'Calm mint green, pure white & fresh aqua tones',
+        keys: ['mintGreen', 'pureWhite', 'aqua', 'mintGreen', 'butter', 'aqua'],
+        housing: 'softMint',
+        cardBg: 'from-[#ECFDF5] to-[#F0FDFA]'
+      },
+      oceanBreeze: {
+        name: 'Ocean Breeze',
+        tagline: 'Airy sky blue, periwinkle & aqua wave',
+        keys: ['skyBlue', 'aqua', 'periwinkle', 'pureWhite', 'skyBlue', 'lavender'],
+        housing: 'skyBlue',
+        cardBg: 'from-[#F0F9FF] to-[#EEF2FF]'
+      },
+      sunsetPeach: {
+        name: 'Sunset Peach',
+        tagline: 'Warm peach, butter yellow & coral rose sorbet',
+        keys: ['peach', 'butter', 'coralPink', 'blushPink', 'peach', 'butter'],
+        housing: 'butterCream',
+        cardBg: 'from-[#FFF7ED] to-[#FDF2F8]'
+      },
+      pureWhite: {
+        name: 'Pure White',
+        tagline: 'Minimalist cloud-white monochrome aesthetic',
+        keys: ['pureWhite', 'pureWhite', 'pureWhite', 'pureWhite', 'pureWhite', 'pureWhite'],
+        housing: 'pureWhite',
+        cardBg: 'from-[#F8FAFC] to-[#FFFFFF]'
+      }
+    };
+
+    // Gallery aliases for Page 1 Inspiration Cards
+    const INSPIRATION_GALLERY = [
+      { preset: 'cottonCandy', title: 'Cotton Candy', word: 'CALM★♥', sub: 'Blush pink, sky blue & lavender on pure white' },
+      { preset: 'matchaMint',  title: 'Matcha Cloud', word: 'ZEN✿☀★', sub: 'Soft mint, cloud white & aqua zen' },
+      { preset: 'sunsetPeach', title: 'Sunset Sorbet', word: 'GLOW☀♥', sub: 'Warm peach, butter yellow & coral rose' },
+      { preset: 'oceanBreeze', title: 'Dreamy Sky',   word: 'DREAM✦', sub: 'Breezy sky blue, aqua & periwinkle cloud' }
+    ];
+
+    const BONUS_SYMBOLS = ['★', '♥', '⚡', '✿', '☺', '♛', '♪', '☀', '☾', '✦', '🍀', '🔥'];
+    const PRICE_PER_UNIT = 199;
+    const FLAT_SHIPPING_SINGLE_UNIT = 49;
+    const FREE_SHIPPING_THRESHOLD = 398;
+    const HERO_FEEDBACK_WORDS = ['Click! ✨', 'Calm +1', 'So Crisp!', 'Ahh~ 🌿', 'Stress ↓', 'Focus ↑'];
+    const SPARKLE_GLYPHS = ['✦', '★', '♥', '✿', '•'];
+    const SPARKLE_COLORS = ['#0EA5E9', '#EC4899', '#6366F1', '#10B981', '#F59E0B'];
+
+    /* =========================================================================
+       2. APPLICATION STATE
+       ========================================================================= */
+    const state = {
+      currentPage: 'home',
+      soundEnabled: true,
+      heroClicks: 0,
+      heroWord: 'FIDGET',
+      heroThemeKey: 'pastelRainbow',
+
+      // Merged Customizer State
+      rawName: 'PRIYA',
+      keyColors: [],       // Individual color IDs for up to 12 keys on the ONE merged bar
+      housingColor: 'pureWhite',
+      switchType: 'blue',
+      claspFinish: 'silver',
+      bonusValues: {},     // Map globalKeyIndex -> symbol or single char
+      activeKeyIndex: 0,
+      paymentMethod: 'UPI (GPay / PhonePe)',
+      lastOrderSummaryText: ''
+    };
+
+    /* =========================================================================
+       3. WEB AUDIO API MECHANICAL SWITCH CLICK SYNTHESIZER (3 DISTINCT SOUNDS)
+       ========================================================================= */
+    let audioCtx = null;
+
+    function getAudioContext() {
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) audioCtx = new AudioContextClass();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    /**
+     * Synthesizes distinct mechanical keyboard switch acoustics:
+     * - 'blue' (Clicky Blue): crisp high-frequency click jacket snap + lively upstroke
+     * - 'lavender' (Tactile Lavender): mid-range tactile bump + warm rounded body
+     * - 'peach' (Quiet Peach): silky damped low-pass muted thock
+     */
+    function playSwitchClick(profile = 'blue') {
+      if (!state.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        const createNoiseBurst = (startTime, duration, freq, qVal, gainPeak, filterType = 'bandpass') => {
+          const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * duration));
+          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.34));
+          }
+          const src = ctx.createBufferSource();
+          src.buffer = buffer;
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = filterType;
+          filter.frequency.setValueAtTime(freq, startTime);
+          filter.Q.setValueAtTime(qVal, startTime);
+
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(gainPeak, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+          src.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          src.start(startTime);
+        };
+
+        const createTone = (startTime, startFreq, endFreq, duration, gainPeak, type = 'triangle') => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(startFreq, startTime);
+          osc.frequency.exponentialRampToValueAtTime(endFreq, startTime + duration);
+
+          gain.gain.setValueAtTime(gainPeak, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + duration);
+        };
+
+        if (profile === 'blue') {
+          // Clicky Blue: sharp click bar snap + crisp top-out
+          createNoiseBurst(now, 0.015, 3800, 2.2, 0.36, 'highpass');
+          createTone(now, 3000, 1250, 0.013, 0.16, 'triangle');
+          createTone(now + 0.005, 320, 130, 0.026, 0.17, 'sine');
+          createNoiseBurst(now + 0.070, 0.012, 4300, 1.8, 0.18, 'highpass');
+          createTone(now + 0.070, 2250, 1450, 0.010, 0.08, 'triangle');
+        } else if (profile === 'lavender') {
+          // Tactile Lavender: rounded mid-pitch tactile bump + gentle rebound
+          createNoiseBurst(now, 0.022, 1550, 1.6, 0.26, 'bandpass');
+          createTone(now, 490, 200, 0.028, 0.17, 'sine');
+          createNoiseBurst(now + 0.074, 0.015, 1950, 1.4, 0.12, 'bandpass');
+        } else {
+          // Quiet Peach: deep, soft, muted creamy linear thock
+          createNoiseBurst(now, 0.026, 620, 0.85, 0.14, 'lowpass');
+          createTone(now, 210, 95, 0.036, 0.16, 'sine');
+          createTone(now + 0.078, 260, 150, 0.018, 0.06, 'sine');
+        }
+      } catch (err) {}
+    }
+
+    function playSuccessChime() {
+      if (!state.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        [523.25, 659.25, 783.99].forEach((freq, i) => {
+          const t = ctx.currentTime + i * 0.08;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.11, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.28);
+        });
+      } catch (err) {}
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      const onIcon = document.getElementById('sound-icon-on');
+      const offIcon = document.getElementById('sound-icon-off');
+      const label = document.getElementById('sound-label');
+      const btn = document.getElementById('sound-toggle-btn');
+
+      if (state.soundEnabled) {
+        onIcon.classList.remove('hidden');
+        onIcon.classList.add('flex');
+        offIcon.classList.add('hidden');
+        offIcon.classList.remove('flex');
+        label.textContent = 'Sound On';
+        btn.setAttribute('aria-pressed', 'true');
+        playSwitchClick(state.switchType);
+      } else {
+        onIcon.classList.add('hidden');
+        onIcon.classList.remove('flex');
+        offIcon.classList.remove('hidden');
+        offIcon.classList.add('flex');
+        label.textContent = 'Muted';
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    /* =========================================================================
+       4. PAGE NAVIGATION (PAGE 1 HOME <-> PAGE 2 ORDER CUSTOM KEYCHAIN)
+       ========================================================================= */
+    function navigateTo(page) {
+      state.currentPage = page;
+      const homeEl = document.getElementById('page-home');
+      const orderEl = document.getElementById('page-order');
+      const tabHome = document.getElementById('nav-tab-home');
+      const tabOrder = document.getElementById('nav-tab-order');
+      const mobHome = document.getElementById('mobile-tab-home');
+      const mobOrder = document.getElementById('mobile-tab-order');
+
+      if (page === 'home') {
+        homeEl.classList.remove('hidden');
+        orderEl.classList.add('hidden');
+        tabHome.className = 'px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-white text-[#334155] shadow-sm';
+        tabOrder.className = 'px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 text-[#64748B] hover:text-[#334155] flex items-center gap-1.5';
+        mobHome.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-sky-50 text-[#334155] border border-sky-200';
+        mobOrder.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-[#F8FAFC] text-[#64748B] border border-slate-200/80';
+      } else {
+        homeEl.classList.add('hidden');
+        orderEl.classList.remove('hidden');
+        tabOrder.className = 'px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-white text-[#334155] shadow-sm flex items-center gap-1.5';
+        tabHome.className = 'px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 text-[#64748B] hover:text-[#334155]';
+        mobOrder.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-sky-50 text-[#334155] border border-sky-200';
+        mobHome.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-[#F8FAFC] text-[#64748B] border border-slate-200/80';
+        renderCustomizerAll();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* =========================================================================
+       5. REUSABLE SINGLE-BAR MERGED 3D KEYCHAIN BUILDER + CLASP SVG
+       ========================================================================= */
+    const getKeyColor = (id) => KEYCAP_COLORS.find(c => c.id === id) || KEYCAP_COLORS[2];
+    const getHousingColor = (id) => HOUSING_COLORS.find(h => h.id === id) || HOUSING_COLORS[0];
+    const getSwitchInfo = (id) => SWITCH_TYPES.find(s => s.id === id) || SWITCH_TYPES[0];
+    const getClaspInfo = (id) => CLASP_FINISHES.find(c => c.id === id) || CLASP_FINISHES[0];
+
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    let svgGradUid = 0;
+
+    /** Generates SVG metallic/pastel split-ring clasp attached to the right end of the merged bar */
+    function buildClaspSVG(claspId = 'silver', size = 'md') {
+      const clasp = getClaspInfo(claspId);
+      const gid = `claspGrad_${++svgGradUid}`;
+      const width = size === 'mini' ? 44 : (size === 'compact' ? 62 : 74);
+      const height = size === 'mini' ? 32 : (size === 'compact' ? 46 : 54);
+
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 92 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0 -ml-1.5 drop-shadow-[0_4px_6px_rgba(148,163,184,0.30)]" aria-hidden="true">
+          <defs>
+            <linearGradient id="${gid}" x1="0" y1="0" x2="92" y2="64" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="${clasp.stops[0]}" />
+              <stop offset="35%" stop-color="${clasp.stops[1]}" />
+              <stop offset="70%" stop-color="${clasp.stops[2]}" />
+              <stop offset="100%" stop-color="${clasp.stops[3]}" />
+            </linearGradient>
+          </defs>
+          <!-- Integrated 3D-printed eyelet loop -->
+          <rect x="0" y="24" width="13" height="16" rx="5.5" fill="${clasp.eyeletFill}" stroke="${clasp.eyeletStroke}" stroke-width="2" />
+          <!-- Interlocking chain links -->
+          <ellipse cx="19" cy="32" rx="7" ry="4.5" stroke="url(#${gid})" stroke-width="3.2" />
+          <ellipse cx="31" cy="32" rx="7" ry="4.5" stroke="url(#${gid})" stroke-width="3.2" />
+          <ellipse cx="43" cy="32" rx="6.5" ry="4.5" stroke="url(#${gid})" stroke-width="3.2" />
+          <!-- Split Keyring -->
+          <circle cx="67" cy="32" r="21" stroke="url(#${gid})" stroke-width="5.6" />
+          <circle cx="67" cy="32" r="17.3" stroke="#FFFFFF" stroke-opacity="0.72" stroke-width="1.5" />
+          <path d="M51 22 C56 14, 72 12, 81 20" stroke="#FFFFFF" stroke-opacity="0.80" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      `;
+    }
+
+    /**
+     * Renders ONE SINGLE CONTINUOUS MERGED 3D KEYCHAIN BAR containing all keys
+     * (3, 6, 9, or 12 keys seamlessly fused in one housing with one clasp at the right).
+     */
+    function buildMergedKeychainHTML({
+      keys,
+      housingId = 'pureWhite',
+      switchId = 'blue',
+      claspId = 'silver',
+      size = 'md', // 'hero' | 'md' | 'compact' | 'mini'
+      onClickFnName = '',
+      selectedIndex = -1
+    }) {
+      const housing = getHousingColor(housingId);
+      const sw = getSwitchInfo(switchId);
+
+      const housingClass = size === 'mini'
+        ? 'merged-housing merged-housing-mini gap-1'
+        : (size === 'compact' ? 'merged-housing merged-housing-compact gap-1.5' : 'merged-housing gap-1.5 sm:gap-2');
+
+      const wellClass = size === 'mini'
+        ? 'switch-well switch-well-mini'
+        : (size === 'compact' ? 'switch-well switch-well-compact' : 'switch-well');
+
+      const btnClass = size === 'hero'
+        ? 'keycap-btn keycap-hero'
+        : (size === 'mini' ? 'keycap-btn keycap-mini' : (size === 'compact' ? 'keycap-btn keycap-compact' : 'keycap-btn'));
+
+      const fontClass = size === 'mini'
+        ? 'text-sm'
+        : (size === 'compact' ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl');
+
+      const keysHTML = keys.map((k) => {
+        const col = getKeyColor(k.colorId);
+        const isSelected = selectedIndex === k.index;
+        const clickAttr = onClickFnName ? `onclick="${onClickFnName}(${k.index}, this)"` : '';
+
+        return `
+          <div class="relative flex flex-col items-center">
+            ${k.isBonus && size !== 'mini' && size !== 'hero' ? `
+              <span class="absolute -top-6 z-20 px-2 py-0.5 rounded-full bg-gradient-to-r from-[#EC4899] to-[#FB923C] text-white text-[9.5px] font-bold shadow-sm whitespace-nowrap">
+                ★ Bonus
+              </span>
+            ` : ''}
+            <div class="${wellClass} ${isSelected ? 'keycap-selected-ring' : ''}">
+              <div class="switch-collar" style="--switch-tint: ${sw.tint};"></div>
+              <button
+                type="button"
+                ${clickAttr}
+                data-key-index="${k.index}"
+                class="${btnClass}"
+                style="
+                  --key-light: ${col.light};
+                  --key-main: ${col.main};
+                  --key-dish-top: ${col.dishTop};
+                  --key-depth: ${col.depth};
+                  --key-text: ${col.text};
+                "
+                aria-label="Key ${k.index + 1}: ${escapeHTML(k.label)}"
+              >
+                <span class="keycap-top ${fontClass}">
+                  ${escapeHTML(k.label)}
+                </span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="inline-flex items-center">
+          <div class="${housingClass}" style="background-color: ${housing.bg}; --housing-depth: ${housing.depth};">
+            ${keysHTML}
+          </div>
+          ${buildClaspSVG(claspId, size)}
+        </div>
+      `;
+    }
+
+    /** Triggers 3D press animation + pastel ripple + celebratory sparkle confetti */
+    function triggerKeycapVisualFeedback(btnEl, { showFloatWord = false, spawnSparkles = true } = {}) {
+      if (!btnEl) return;
+      btnEl.classList.add('is-pressed');
+      setTimeout(() => btnEl.classList.remove('is-pressed'), 110);
+
+      // Soft pastel ripple
+      const ripple = document.createElement('span');
+      ripple.className = 'click-ripple';
+      btnEl.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 480);
+
+      // Subtle floating pastel sparkles/confetti
+      if (spawnSparkles && btnEl.parentElement) {
+        const count = showFloatWord ? 4 : 2;
+        for (let i = 0; i < count; i++) {
+          const sp = document.createElement('span');
+          sp.className = 'sparkle-particle';
+          sp.textContent = SPARKLE_GLYPHS[Math.floor(Math.random() * SPARKLE_GLYPHS.length)];
+          sp.style.color = SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)];
+          const tx = (Math.random() * 54 - 27).toFixed(0);
+          const ty = (-24 - Math.random() * 28).toFixed(0);
+          const rot = (Math.random() * 90 - 45).toFixed(0);
+          sp.style.setProperty('--tx', `${tx}px`);
+          sp.style.setProperty('--ty', `${ty}px`);
+          sp.style.setProperty('--rot', `${rot}deg`);
+          btnEl.parentElement.appendChild(sp);
+          setTimeout(() => sp.remove(), 680);
+        }
+      }
+
+      if (showFloatWord && btnEl.parentElement) {
+        const toast = document.createElement('span');
+        toast.className = 'float-feedback';
+        toast.textContent = HERO_FEEDBACK_WORDS[state.heroClicks % HERO_FEEDBACK_WORDS.length];
+        btnEl.parentElement.appendChild(toast);
+        setTimeout(() => toast.remove(), 750);
+      }
+    }
+
+    /* =========================================================================
+       6. PAGE 1: HERO 6-KEY MERGED DEMO, COMPARISON & INSPIRATION GALLERY
+       ========================================================================= */
+    function renderHeroDemo() {
+      const theme = THEME_PRESETS[state.heroThemeKey] || THEME_PRESETS.pastelRainbow;
+      const chars = state.heroWord === 'CALM★'
+        ? ['C', 'A', 'L', 'M', '★', '♥']
+        : ['F', 'I', 'D', 'G', 'E', 'T'];
+
+      const heroKeys = chars.map((ch, i) => ({
+        index: i,
+        label: ch,
+        colorId: theme.keys[i % theme.keys.length],
+        isBonus: false
+      }));
+
+      document.getElementById('hero-keychain-wrapper').innerHTML = buildMergedKeychainHTML({
+        keys: heroKeys,
+        housingId: 'pureWhite',
+        switchId: 'blue',
+        claspId: 'silver',
+        size: 'hero',
+        onClickFnName: 'handleHeroKeyClick'
+      });
+    }
+
+    function setHeroWord(wordKey) {
+      state.heroWord = wordKey;
+      const btnFidget = document.getElementById('hero-word-fidget');
+      const btnCalm = document.getElementById('hero-word-calm');
+      if (wordKey === 'FIDGET') {
+        btnFidget.className = 'px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-[#0EA5E9] border border-sky-200 transition';
+        btnCalm.className = 'px-3 py-1 rounded-full text-xs font-bold bg-[#FDF2F8] text-[#EC4899] border border-pink-200 hover:bg-pink-100 transition';
+      } else {
+        btnCalm.className = 'px-3 py-1 rounded-full text-xs font-bold bg-pink-100 text-[#EC4899] border border-pink-300 transition';
+        btnFidget.className = 'px-3 py-1 rounded-full text-xs font-bold bg-[#F0F9FF] text-[#0EA5E9] border border-sky-200 hover:bg-sky-100 transition';
+      }
+      renderHeroDemo();
+      playSwitchClick('blue');
+    }
+
+    function setHeroDemoTheme(themeKey) {
+      state.heroThemeKey = themeKey;
+      renderHeroDemo();
+      playSwitchClick('blue');
+    }
+
+    function handleHeroKeyClick(idx, btnEl) {
+      state.heroClicks += 1;
+      document.getElementById('hero-click-counter').textContent = state.heroClicks;
+      playSwitchClick('blue');
+      triggerKeycapVisualFeedback(btnEl, { showFloatWord: true, spawnSparkles: true });
+    }
+
+    // Keyboard shortcuts 1–6 press the 6-key merged hero demo on Home page
+    document.addEventListener('keydown', (e) => {
+      if (state.currentPage !== 'home') return;
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (['1', '2', '3', '4', '5', '6'].includes(e.key)) {
+        const idx = parseInt(e.key, 10) - 1;
+        const btn = document.querySelector(`#hero-keychain-wrapper button[data-key-index="${idx}"]`);
+        if (btn) handleHeroKeyClick(idx, btn);
+      }
+    });
+
+    function renderComparisonPreview() {
+      const container = document.getElementById('compare-fidget3d-preview');
+      if (!container) return;
+      const letters = ['H', 'R', 'I', 'D', 'A', 'Y'];
+      const cols = THEME_PRESETS.pastelRainbow.keys;
+      container.innerHTML = buildMergedKeychainHTML({
+        keys: letters.map((l, i) => ({ index: i, label: l, colorId: cols[i], isBonus: false })),
+        housingId: 'pureWhite',
+        switchId: 'blue',
+        claspId: 'silver',
+        size: 'mini'
+      });
+    }
+
+    function renderInspirationGallery() {
+      const grid = document.getElementById('inspiration-gallery-grid');
+      if (!grid) return;
+
+      grid.innerHTML = INSPIRATION_GALLERY.map((item) => {
+        const theme = THEME_PRESETS[item.preset];
+        const chars = Array.from(item.word);
+        const previewHTML = buildMergedKeychainHTML({
+          keys: chars.map((ch, i) => ({
+            index: i,
+            label: ch,
+            colorId: theme.keys[i % theme.keys.length],
+            isBonus: false
+          })),
+          housingId: theme.housing,
+          switchId: 'blue',
+          claspId: item.preset === 'sunsetPeach' ? 'roseGold' : (item.preset === 'cottonCandy' ? 'pastelPearl' : 'silver'),
+          size: 'mini'
+        });
+
+        return `
+          <button
+            type="button"
+            onclick="applyGalleryPalette('${item.preset}')"
+            class="group text-left rounded-3xl bg-gradient-to-br ${theme.cardBg} border-2 border-white shadow-soft hover:shadow-card hover:-translate-y-1 transition-all p-5 sm:p-6 flex flex-col justify-between"
+          >
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <h3 class="font-display font-bold text-xl text-[#334155]">${item.title}</h3>
+                <p class="text-xs text-[#64748B] mt-0.5">${item.sub}</p>
+              </div>
+              <span class="shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-white text-[#0EA5E9] shadow-sm border border-sky-100">From ₹199</span>
+            </div>
+
+            <div class="flex justify-center py-5 px-2 rounded-2xl bg-white/88 border border-white/95 overflow-x-auto mb-4">
+              <div class="group-hover:scale-[1.03] transition-transform">
+                ${previewHTML}
+              </div>
+            </div>
+
+            <div class="text-xs font-bold text-[#6366F1] group-hover:text-[#0EA5E9] flex items-center justify-between">
+              <span>Load "${item.title}" in Customizer</span>
+              <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function applyGalleryPalette(presetKey) {
+      playSwitchClick('blue');
+      applyThemePreset(presetKey, false);
+      navigateTo('order');
+    }
+
+    /* =========================================================================
+       7. PAGE 2: MERGED SINGLE-KEYCHAIN LOGIC & LIVE CUSTOMIZER
+       ========================================================================= */
+
+    /**
+     * Core Merged Keychain Calculator:
+     * - 1–3 letters  => 1 unit (3 keys)  => ₹199
+     * - 4–6 letters  => 2 units (6 keys) => ₹398 (1 single merged 6-key bar)
+     * - 7–9 letters  => 3 units (9 keys) => ₹597 (1 single merged 9-key bar)
+     * - 10–12 letters => 4 units (12 keys) => ₹796 (1 single merged 12-key bar)
+     */
+    function getMergedConfig() {
+      const cleaned = state.rawName.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 12);
+      const nameLen = cleaned.length;
+      const units = Math.max(1, Math.ceil(nameLen / 3));
+      const totalKeys = units * 3;
+      const bonusCount = totalKeys - nameLen;
+      const subtotal = units * PRICE_PER_UNIT;
+      const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+      const shippingCost = freeShipping ? 0 : FLAT_SHIPPING_SINGLE_UNIT;
+      const grandTotal = subtotal + shippingCost;
+
+      // Ensure 12 color slots are initialized cleanly
+      const fallbackCycle = THEME_PRESETS.pastelRainbow.keys;
+      for (let i = 0; i < 12; i++) {
+        if (!state.keyColors[i]) {
+          state.keyColors[i] = fallbackCycle[i % fallbackCycle.length];
+        }
+      }
+
+      const keys = [];
+      const bonusIndices = [];
+
+      for (let i = 0; i < totalKeys; i++) {
+        const isBonus = i >= nameLen;
+        let label = '';
+        if (!isBonus) {
+          label = cleaned[i];
+        } else {
+          bonusIndices.push(i);
+          if (!state.bonusValues[i]) {
+            state.bonusValues[i] = BONUS_SYMBOLS[(i - nameLen) % BONUS_SYMBOLS.length];
+          }
+          label = state.bonusValues[i];
+        }
+        keys.push({
+          index: i,
+          label,
+          isBonus,
+          colorId: state.keyColors[i]
+        });
+      }
+
+      if (state.activeKeyIndex >= totalKeys) {
+        state.activeKeyIndex = totalKeys - 1;
+      }
+
+      return {
+        cleaned,
+        nameLen,
+        units,
+        totalKeys,
+        bonusCount,
+        bonusIndices,
+        subtotal,
+        freeShipping,
+        shippingCost,
+        grandTotal,
+        keys
+      };
+    }
+
+    function handleNameInput(rawVal) {
+      const original = String(rawVal);
+      const sanitized = original.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 12);
+      const hadStripped = original.length > 0 && original.toUpperCase() !== sanitized;
+
+      state.rawName = sanitized;
+      const inputEl = document.getElementById('custom-name-input');
+      if (inputEl && inputEl.value !== sanitized) {
+        inputEl.value = sanitized;
+      }
+
+      const hintEl = document.getElementById('input-strip-hint');
+      if (hintEl) {
+        if (hadStripped) hintEl.classList.remove('hidden');
+        else hintEl.classList.add('hidden');
+      }
+
+      renderCustomizerAll();
+    }
+
+    function applyNamePreset(word) {
+      playSwitchClick(state.switchType);
+      state.activeKeyIndex = 0;
+      const hintEl = document.getElementById('input-strip-hint');
+      if (hintEl) hintEl.classList.add('hidden');
+      handleNameInput(word);
+    }
+
+    function handleMergedKeyClick(keyIdx, btnEl) {
+      state.activeKeyIndex = keyIdx;
+      playSwitchClick(state.switchType);
+      triggerKeycapVisualFeedback(btnEl, { showFloatWord: false, spawnSparkles: true });
+      setTimeout(() => renderCustomizerAll(), 100);
+    }
+
+    function applyThemePreset(presetKey, shouldPlaySound = true) {
+      const theme = THEME_PRESETS[presetKey];
+      if (!theme) return;
+      for (let i = 0; i < 12; i++) {
+        state.keyColors[i] = theme.keys[i % theme.keys.length];
+      }
+      state.housingColor = theme.housing;
+      if (shouldPlaySound) playSwitchClick(state.switchType);
+      renderCustomizerAll();
+    }
+
+    function selectKeycapColor(colorId) {
+      state.keyColors[state.activeKeyIndex] = colorId;
+      playSwitchClick(state.switchType);
+      renderCustomizerAll();
+    }
+
+    function applyActiveColorToAllKeys() {
+      const col = state.keyColors[state.activeKeyIndex] || 'skyBlue';
+      for (let i = 0; i < 12; i++) {
+        state.keyColors[i] = col;
+      }
+      playSwitchClick(state.switchType);
+      renderCustomizerAll();
+    }
+
+    function selectHousingColor(housingId) {
+      state.housingColor = housingId;
+      playSwitchClick(state.switchType);
+      renderCustomizerAll();
+    }
+
+    function selectSwitchType(swId) {
+      state.switchType = swId;
+      playSwitchClick(swId);
+      renderCustomizerAll();
+    }
+
+    function selectClaspFinish(claspId) {
+      state.claspFinish = claspId;
+      playSwitchClick(state.switchType);
+      renderCustomizerAll();
+    }
+
+    function focusBonusSlot(idx) {
+      state.activeKeyIndex = idx;
+      playSwitchClick(state.switchType);
+      renderCustomizerAll();
+    }
+
+    function selectBonusSymbol(sym) {
+      const cfg = getMergedConfig();
+      if (cfg.bonusIndices.length === 0) return;
+      const targetIdx = cfg.bonusIndices.includes(state.activeKeyIndex)
+        ? state.activeKeyIndex
+        : cfg.bonusIndices[0];
+
+      state.activeKeyIndex = targetIdx;
+      state.bonusValues[targetIdx] = sym;
+      const customInput = document.getElementById('bonus-custom-char');
+      if (customInput) customInput.value = '';
+      playSwitchClick(state.switchType);
+      renderCustomizerAll();
+    }
+
+    function setCustomBonusChar(val) {
+      const trimmed = String(val).trim().toUpperCase().slice(0, 1);
+      if (!trimmed) return;
+      const cfg = getMergedConfig();
+      if (cfg.bonusIndices.length === 0) return;
+      const targetIdx = cfg.bonusIndices.includes(state.activeKeyIndex)
+        ? state.activeKeyIndex
+        : cfg.bonusIndices[0];
+
+      state.activeKeyIndex = targetIdx;
+      state.bonusValues[targetIdx] = trimmed;
+      renderCustomizerAll();
+    }
+
+    /** Master UI Renderer for Page 2 Merged Keychain Customizer & Order Panel */
+    function renderCustomizerAll() {
+      const cfg = getMergedConfig();
+      const activeKey = cfg.keys[state.activeKeyIndex] || cfg.keys[0];
+      const housingObj = getHousingColor(state.housingColor);
+      const swObj = getSwitchInfo(state.switchType);
+      const claspObj = getClaspInfo(state.claspFinish);
+
+      // 1. Update Auto-Calculator Stats Strip
+      document.getElementById('stat-letters').textContent = cfg.nameLen;
+      document.getElementById('stat-total-keys').textContent = cfg.totalKeys;
+      document.getElementById('stat-bonus').textContent = cfg.bonusCount;
+      document.getElementById('stat-price').textContent = `₹${cfg.subtotal}`;
+
+      // 2. Update Selected Key & Merged Banner Badges
+      const keyDesc = `Key #${activeKey.index + 1} (${activeKey.label}${activeKey.isBonus ? ' • Bonus' : ''})`;
+      document.getElementById('selected-key-label').textContent = keyDesc;
+      document.getElementById('color-picker-target').textContent = keyDesc;
+
+      document.getElementById('merged-pill-badge').textContent =
+        `🔗 1 Seamless Merged Keychain • ${cfg.totalKeys} Keys (${cfg.units} × 3-Key Pack)`;
+
+      document.getElementById('merged-callout-text').innerHTML = cfg.units > 1
+        ? `All <strong>${cfg.units} units seamlessly merge into ONE continuous ${cfg.totalKeys}-key bar</strong> — no separate keychains!`
+        : `Compact 3-key custom keychain bar. Add a 4th letter anytime to auto-merge into a 6-key bar!`;
+
+      // 3. Render ONE SINGLE CONTINUOUS MERGED 3D KEYCHAIN BAR
+      const previewSize = cfg.totalKeys >= 9 ? 'compact' : 'md';
+      document.getElementById('live-merged-keychain').innerHTML = buildMergedKeychainHTML({
+        keys: cfg.keys,
+        housingId: state.housingColor,
+        switchId: state.switchType,
+        claspId: state.claspFinish,
+        size: previewSize,
+        onClickFnName: 'handleMergedKeyClick',
+        selectedIndex: state.activeKeyIndex
+      });
+
+      // 4. Bonus Key Customizer Panel (Visible whenever bonusCount > 0)
+      const bonusPanel = document.getElementById('bonus-key-panel');
+      if (cfg.bonusCount > 0) {
+        bonusPanel.classList.remove('hidden');
+        const targetBonusIdx = cfg.bonusIndices.includes(state.activeKeyIndex)
+          ? state.activeKeyIndex
+          : cfg.bonusIndices[0];
+        const currentSym = state.bonusValues[targetBonusIdx];
+
+        document.getElementById('bonus-panel-title').textContent = cfg.bonusCount === 1
+          ? `Customize Bonus Key #${targetBonusIdx + 1}`
+          : `Customize Your ${cfg.bonusCount} Bonus Keys`;
+
+        const slotSel = document.getElementById('bonus-slot-selector');
+        slotSel.innerHTML = cfg.bonusIndices.length > 1
+          ? cfg.bonusIndices.map((idx) => {
+              const isSel = idx === targetBonusIdx;
+              return `
+                <button
+                  type="button"
+                  onclick="focusBonusSlot(${idx})"
+                  class="px-2.5 py-1 rounded-full text-xs font-bold transition ${
+                    isSel ? 'bg-[#EC4899] text-white shadow-sm' : 'bg-white text-[#64748B] border border-pink-200 hover:bg-pink-50'
+                  }"
+                >
+                  Key #${idx + 1} (${escapeHTML(state.bonusValues[idx])})
+                </button>
+              `;
+            }).join('')
+          : '';
+
+        document.getElementById('bonus-symbols-grid').innerHTML = BONUS_SYMBOLS.map((sym) => {
+          const isPicked = currentSym === sym;
+          return `
+            <button
+              type="button"
+              onclick="selectBonusSymbol('${sym}')"
+              class="w-11 h-11 rounded-2xl font-display font-bold text-lg flex items-center justify-center transition-all ${
+                isPicked
+                  ? 'bg-gradient-to-br from-[#EC4899] to-[#FB923C] text-white shadow-pinkGlow scale-105'
+                  : 'bg-white hover:bg-pink-50 text-[#334155] border border-pink-200/80'
+              }"
+            >
+              ${sym}
+            </button>
+          `;
+        }).join('');
+      } else {
+        bonusPanel.classList.add('hidden');
+      }
+
+      // 5. Quick Palette Presets
+      document.getElementById('theme-presets-row').innerHTML = Object.entries(THEME_PRESETS).map(([key, theme]) => {
+        const dots = theme.keys.slice(0, 4).map(cid => {
+          const c = getKeyColor(cid);
+          return `<span class="w-3.5 h-3.5 rounded-full border border-white shadow-sm -ml-1 first:ml-0" style="background:${c.main};"></span>`;
+        }).join('');
+        return `
+          <button
+            type="button"
+            onclick="applyThemePreset('${key}')"
+            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#F8FAFC] hover:bg-sky-50 border border-slate-200 hover:border-sky-200 text-xs font-bold text-[#334155] transition active:scale-95"
+          >
+            <span class="flex items-center">${dots}</span>
+            <span>${theme.name}</span>
+          </button>
+        `;
+      }).join('');
+
+      // 6. Per-Key Keycap Colors (10 PLA colors)
+      document.getElementById('keycap-colors-grid').innerHTML = KEYCAP_COLORS.map((col) => {
+        const isSel = col.id === activeKey.colorId;
+        return `
+          <button
+            type="button"
+            onclick="selectKeycapColor('${col.id}')"
+            title="${col.name}"
+            class="flex flex-col items-center gap-1 focus:outline-none"
+          >
+            <span
+              class="w-10 h-10 rounded-2xl transition-all flex items-center justify-center ${
+                isSel ? 'ring-2 ring-[#0EA5E9] ring-offset-2 scale-105 shadow-md' : 'hover:scale-105'
+              }"
+              style="background:${col.swatch}; border: 2px solid ${col.border};"
+            >
+              ${isSel ? `<span class="text-xs font-bold" style="color:${col.text}">✓</span>` : ''}
+            </span>
+            <span class="text-[10px] font-semibold text-[#64748B] text-center leading-tight">${col.name.split(' ')[0]}</span>
+          </button>
+        `;
+      }).join('');
+
+      // 7. Merged Housing Base Colors (6 options)
+      document.getElementById('housing-colors-grid').innerHTML = HOUSING_COLORS.map((h) => {
+        const isSel = h.id === state.housingColor;
+        return `
+          <button
+            type="button"
+            onclick="selectHousingColor('${h.id}')"
+            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl border-2 text-xs font-bold transition-all ${
+              isSel ? 'border-[#6366F1] bg-[#F5F3FF] text-[#6366F1] shadow-sm' : 'border-slate-200 bg-white text-[#64748B] hover:border-violet-200'
+            }"
+          >
+            <span class="w-4 h-4 rounded-full" style="background:${h.swatch}; border: 1.5px solid ${h.border};"></span>
+            <span>${h.name}</span>
+          </button>
+        `;
+      }).join('');
+
+      // 8. Switch Sound & Feel Selector
+      document.getElementById('switch-selector-grid').innerHTML = SWITCH_TYPES.map((sw) => {
+        const isSel = sw.id === state.switchType;
+        return `
+          <button
+            type="button"
+            onclick="selectSwitchType('${sw.id}')"
+            class="text-left p-3.5 rounded-2xl border-2 transition-all ${
+              isSel ? 'border-[#0EA5E9] bg-[#F0F9FF] shadow-sm' : 'border-slate-200/80 bg-[#F8FAFC] hover:bg-white hover:border-sky-200'
+            }"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="w-3.5 h-3.5 rounded-full" style="background:${sw.tint};"></span>
+              ${isSel ? '<span class="text-[10px] font-bold text-[#0EA5E9]">Selected ✓</span>' : ''}
+            </div>
+            <div class="font-display font-bold text-sm text-[#334155]">${sw.name}</div>
+            <p class="text-[11px] text-[#64748B] mt-0.5 leading-snug">${sw.desc}</p>
+          </button>
+        `;
+      }).join('');
+
+      // 9. Keychain Clasp Finish Selector
+      document.getElementById('clasp-selector-grid').innerHTML = CLASP_FINISHES.map((cl) => {
+        const isSel = cl.id === state.claspFinish;
+        return `
+          <button
+            type="button"
+            onclick="selectClaspFinish('${cl.id}')"
+            class="text-left p-3.5 rounded-2xl border-2 transition-all ${
+              isSel ? 'border-[#EC4899] bg-[#FDF2F8] shadow-sm' : 'border-slate-200/80 bg-[#F8FAFC] hover:bg-white hover:border-pink-200'
+            }"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="w-4 h-4 rounded-full border border-white shadow-sm" style="background:${cl.swatch};"></span>
+              ${isSel ? '<span class="text-[10px] font-bold text-[#EC4899]">Selected ✓</span>' : ''}
+            </div>
+            <div class="font-display font-bold text-sm text-[#334155]">${cl.name}</div>
+            <p class="text-[11px] text-[#64748B] mt-0.5 leading-snug">${cl.desc}</p>
+          </button>
+        `;
+      }).join('');
+
+      // 10. Sticky Order Summary Panel
+      const bonusStr = cfg.bonusIndices.map(idx => state.bonusValues[idx]).join(' ');
+      const wordSummaryText = cfg.cleaned
+        ? `"${cfg.cleaned}"${bonusStr ? ` + ${bonusStr}` : ''}`
+        : `Custom Icons (${bonusStr})`;
+
+      document.getElementById('summary-word-display').textContent = wordSummaryText;
+      document.getElementById('summary-item-price').textContent = `₹${cfg.subtotal}`;
+      document.getElementById('summary-config-line').textContent =
+        `${cfg.totalKeys} Keys Merged (${cfg.units} × 3-Key Unit @ ₹${PRICE_PER_UNIT})`;
+
+      document.getElementById('summary-key-pills').innerHTML = cfg.keys.map((k) => {
+        const c = getKeyColor(k.colorId);
+        return `
+          <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-lg text-xs font-display font-bold border" style="background:${c.light}; border-color:${c.border}; color:${c.text};">
+            ${escapeHTML(k.label)}
+          </span>
+        `;
+      }).join('');
+
+      document.getElementById('summary-housing').textContent = housingObj.name;
+      document.getElementById('summary-switch').textContent = swObj.name;
+      document.getElementById('summary-clasp').textContent = claspObj.name;
+
+      const shipBadge = document.getElementById('shipping-status-badge');
+      const shipLine = document.getElementById('summary-shipping-line');
+      const upsellNote = document.getElementById('shipping-upsell-note');
+
+      if (cfg.freeShipping) {
+        shipBadge.textContent = '✓ Free Shipping Unlocked';
+        shipBadge.className = 'px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 font-bold text-[11px] border border-emerald-200/80';
+        shipLine.textContent = 'FREE (Merged ₹398+)';
+        shipLine.className = 'font-bold text-emerald-600';
+        upsellNote.classList.add('hidden');
+      } else {
+        shipBadge.textContent = 'Flat ₹49 Shipping';
+        shipBadge.className = 'px-3 py-1 rounded-full bg-sky-50 text-[#0EA5E9] font-bold text-[11px] border border-sky-200/80';
+        shipLine.textContent = `₹${FLAT_SHIPPING_SINGLE_UNIT} Flat Shipping`;
+        shipLine.className = 'font-bold text-[#475569]';
+        upsellNote.classList.remove('hidden');
+      }
+
+      document.getElementById('summary-total').textContent = `₹${cfg.grandTotal}`;
+      document.getElementById('place-order-btn').textContent = `Place Custom Order — ₹${cfg.grandTotal}`;
+    }
+
+    /* =========================================================================
+       8. CHECKOUT FORM VALIDATION, ORDER MODAL & CLIPBOARD COPY
+       ========================================================================= */
+    function selectPayment(method) {
+      state.paymentMethod = method;
+      document.querySelectorAll('.pay-pill').forEach((btn) => {
+        if (btn.dataset.pay === method) {
+          btn.className = 'pay-pill py-2.5 px-2 rounded-xl text-xs font-bold border-2 border-[#0EA5E9] bg-sky-50 text-[#0EA5E9] transition';
+        } else {
+          btn.className = 'pay-pill py-2.5 px-2 rounded-xl text-xs font-bold border border-slate-200 bg-[#F8FAFC] text-[#64748B] hover:border-sky-200 transition';
+        }
+      });
+    }
+
+    function showFormError(msg) {
+      const box = document.getElementById('form-error-box');
+      box.textContent = msg;
+      box.classList.remove('hidden');
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function clearFormError() {
+      const box = document.getElementById('form-error-box');
+      box.classList.add('hidden');
+      box.textContent = '';
+    }
+
+    function handleOrderSubmit(e) {
+      e.preventDefault();
+      clearFormError();
+
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.replace(/\D/g, '');
+      const address = document.getElementById('cust-address').value.trim();
+      const city = document.getElementById('cust-city').value.trim();
+      const pincode = document.getElementById('cust-pincode').value.replace(/\D/g, '');
+      const note = document.getElementById('cust-note').value.trim();
+
+      if (name.length < 2) return showFormError('Please enter your full name.');
+      if (phone.length < 10) return showFormError('Please enter a valid 10-digit Phone / WhatsApp number.');
+      if (address.length < 5) return showFormError('Please enter your complete delivery address.');
+      if (city.length < 2) return showFormError('Please enter your city.');
+      if (pincode.length !== 6) return showFormError('Please enter a valid 6-digit pincode.');
+
+      const cfg = getMergedConfig();
+      const housingObj = getHousingColor(state.housingColor);
+      const swObj = getSwitchInfo(state.switchType);
+      const claspObj = getClaspInfo(state.claspFinish);
+      const orderId = `F3D-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      // Render Miniature Visual of Exact Merged Keychain
+      document.getElementById('modal-order-id').textContent = `ORDER #${orderId}`;
+      document.getElementById('modal-merged-visual').innerHTML = buildMergedKeychainHTML({
+        keys: cfg.keys,
+        housingId: state.housingColor,
+        switchId: state.switchType,
+        claspId: state.claspFinish,
+        size: 'mini'
+      });
+
+      const keyDetailsList = cfg.keys
+        .map(k => `${k.label} (${getKeyColor(k.colorId).name}${k.isBonus ? ' - Bonus' : ''})`)
+        .join(', ');
+
+      document.getElementById('modal-details-box').innerHTML = `
+        <div class="flex justify-between gap-2"><span>Item:</span><strong class="text-[#334155] text-right">1 Merged Keychain (${cfg.totalKeys} Keys)</strong></div>
+        <div class="flex justify-between gap-2"><span>Design:</span><strong class="text-[#6366F1] text-right">${escapeHTML(cfg.keys.map(k => k.label).join(' '))}</strong></div>
+        <div class="flex justify-between gap-2"><span>Housing / Switch / Clasp:</span><strong class="text-[#334155] text-right">${housingObj.name} • ${swObj.name} • ${claspObj.name}</strong></div>
+        <div class="flex justify-between gap-2"><span>Customer:</span><strong class="text-[#334155] text-right">${escapeHTML(name)} (${escapeHTML(phone)})</strong></div>
+        <div class="flex justify-between gap-2"><span>Address:</span><strong class="text-[#334155] text-right">${escapeHTML(address)}, ${escapeHTML(city)} - ${escapeHTML(pincode)}</strong></div>
+        <div class="flex justify-between gap-2"><span>Payment:</span><strong class="text-[#334155]">${escapeHTML(state.paymentMethod)}</strong></div>
+        <div class="flex justify-between gap-2 pt-2 border-t border-slate-200/80 text-base">
+          <span class="font-bold text-[#334155]">Total (${cfg.freeShipping ? 'Free Shipping' : 'Incl. ₹49 Shipping'}):</span>
+          <strong class="font-display text-[#0EA5E9]">₹${cfg.grandTotal}</strong>
+        </div>
+      `;
+
+      state.lastOrderSummaryText = [
+        `Fidget 3D — Custom Merged Keychain Order`,
+        `Order ID: #${orderId}`,
+        `Item: 1 Seamless Merged Keychain — ${cfg.totalKeys} Keys (${cfg.units} × 3-Key Unit @ ₹199)`,
+        `Keys: ${keyDetailsList}`,
+        `Merged Housing: ${housingObj.name}`,
+        `Switch Feel: ${swObj.name}`,
+        `Clasp Finish: ${claspObj.name}`,
+        `Shipping: ${cfg.freeShipping ? 'FREE (Merged Keychain ₹398+)' : '₹49 Flat Shipping'}`,
+        `Total: ₹${cfg.grandTotal} INR`,
+        `---`,
+        `Customer: ${name}`,
+        `Phone / WhatsApp: ${phone}`,
+        `Address: ${address}, ${city} - ${pincode}`,
+        `Payment: ${state.paymentMethod}`,
+        note ? `Special Note: ${note}` : ''
+      ].filter(Boolean).join('\n');
+
+      document.getElementById('copy-toast').classList.add('hidden');
+      const modal = document.getElementById('order-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      playSuccessChime();
+    }
+
+    function closeOrderModal() {
+      const modal = document.getElementById('order-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    /** Copies order summary safely via execCommand('copy') for iframe compatibility */
+    function copyOrderSummary() {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = state.lastOrderSummaryText;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+
+        document.getElementById('copy-toast').classList.remove('hidden');
+        playSwitchClick('blue');
+      } catch (err) {}
+    }
+
+    /* =========================================================================
+       9. INITIALIZATION ON PAGE LOAD
+       ========================================================================= */
+    window.addEventListener('DOMContentLoaded', () => {
+      applyThemePreset('pastelRainbow', false);
+      renderHeroDemo();
+      renderComparisonPreview();
+      renderInspirationGallery();
+      renderCustomizerAll();
+    });
+  </script>
+</body>
+</html>
